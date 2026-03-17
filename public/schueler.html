@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fahrzeug-Programmierer</title>
+<script src="/socket.io/socket.io.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#f0ede8;color:#1a1a1a;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
+
+header{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#1e3a5f;border-bottom:1px solid #1e40af;flex-shrink:0;}
+header h1{font-size:15px;font-weight:600;color:#f1f5f9;}
+.badge{font-size:11px;background:#2563eb;color:#fff;padding:2px 9px;border-radius:999px;}
+.hsep{flex:1;}
+#connDot{width:9px;height:9px;border-radius:50%;background:#ef4444;transition:background .3s;}
+#connDot.on{background:#22c55e;}
+
+#task-banner{padding:7px 16px;background:#eff6ff;border-bottom:1px solid #bfdbfe;font-size:13px;color:#1e40af;font-weight:500;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+#task-banner.hidden{display:none;}
+
+#app{display:grid;grid-template-columns:260px 1fr;flex:1;overflow:hidden;}
+#right{display:flex;flex-direction:column;overflow:hidden;}
+
+#panel{border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden;background:#fafafa;}
+.ph{padding:9px 12px 6px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid #e8e8e8;flex-shrink:0;}
+
+.pal-hint{font-size:10px;color:#94a3b8;padding:5px 8px 2px;text-align:center;}
+#palette{padding:8px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #e8e8e8;flex-shrink:0;}
+.bb{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:#1a1a1a;transition:background .1s,transform .1s;user-select:none;}
+.bb:hover{background:#e8f0fe;border-color:#93c5fd;}
+.bb:active{transform:scale(.97);}
+.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+
+#plist{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;}
+#pempty{font-size:12px;color:#aaa;text-align:center;margin-top:24px;line-height:1.7;}
+.pb{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;border:1px solid #e8e8e8;background:#f7f7f7;font-size:12px;font-weight:500;color:#1a1a1a;transition:all .15s;}
+.pb.active{border-color:#2563eb;background:#eff6ff;}
+.pb .del{margin-left:auto;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 2px;flex-shrink:0;}
+.pb .del:hover{color:#e24b4a;}
+.ps{display:flex;align-items:center;gap:3px;}
+.ps button{width:20px;height:20px;border-radius:5px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;color:#333;display:flex;align-items:center;justify-content:center;}
+.ps button:hover{background:#f0f0f0;}
+.ps span{font-size:12px;min-width:16px;text-align:center;color:#333;}
+
+#fa{display:flex;align-items:center;justify-content:center;padding:16px;background:#f0ede8;overflow:hidden;flex:1;}
+canvas#cv{display:block;border-radius:5px;}
+#no-board{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#94a3b8;text-align:center;font-size:14px;line-height:1.6;padding:40px;}
+#no-board .big{font-size:48px;}
+
+#statusbar{display:flex;align-items:center;gap:10px;padding:0 16px;padding-bottom:env(safe-area-inset-bottom,0px);border-bottom:1px solid #e8e8e8;background:#fafafa;font-size:12px;color:#666;flex-shrink:0;min-height:52px;}
+#smsg{flex:1;}
+.rb{padding:6px 16px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#1a1a1a;transition:background .1s;}
+.rb:hover{background:#e8f0fe;border-color:#4285f4;color:#1a73e8;}
+.rb:disabled{opacity:.4;cursor:not-allowed;}
+.xb{padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:transparent;cursor:pointer;font-size:12px;color:#888;}
+.xb:hover{background:#f5f5f5;color:#333;}
+
+@media(prefers-color-scheme:dark){
+  body{background:#111;color:#f0f0f0;}
+  #panel,.ph{background:#1e1e1e;border-color:#2e2e2e;}
+  .bb{background:#252525;border-color:#3a3a3a;color:#f0f0f0;}
+  .bb:hover{background:#1e3a5f;border-color:#3b82f6;}
+  .pb{background:#252525;border-color:#333;color:#f0f0f0;}
+  .pb.active{border-color:#3b82f6;background:#1e3a5f;}
+  .pb .del{color:#555;}
+  .ps button{background:#2a2a2a;border-color:#3a3a3a;color:#ccc;}
+  #fa{background:#161616;}
+  #statusbar{background:#1e1e1e;border-color:#2e2e2e;}
+  .rb{background:#252525;border-color:#3a3a3a;color:#f0f0f0;}
+  .rb:hover{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd;}
+  .xb{border-color:#3a3a3a;color:#777;}
+  #pempty,.pal-hint{color:#555;}
+  #task-banner{background:#1e3a5f;border-color:#1e40af;color:#93c5fd;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="badge">SCHÜLER</span>
+  <h1 id="studentName">Fahrzeug-Programmierer</h1>
+  <div class="hsep"></div>
+  <div id="connDot" title="Verbindungsstatus"></div>
+</header>
+
+<div id="task-banner" class="hidden">
+  <span>🎯</span><span id="taskText"></span>
+</div>
+
+<div id="app">
+  <div id="panel">
+    <div class="ph">Bausteine</div>
+    <div class="pal-hint">↓ Klicken zum Hinzufügen</div>
+    <div id="palette">
+      <div class="bb" data-cmd="fwd"  data-s="1"><span class="dot" style="background:#378ADD"></span>Vorwärts</div>
+      <div class="bb" data-cmd="bwd"  data-s="1"><span class="dot" style="background:#D85A30"></span>Rückwärts</div>
+      <div class="bb" data-cmd="left" data-s="1"><span class="dot" style="background:#1D9E75"></span>Links drehen</div>
+      <div class="bb" data-cmd="rght" data-s="1"><span class="dot" style="background:#BA7517"></span>Rechts drehen</div>
+      <div class="bb" data-cmd="stp"  data-s="0"><span class="dot" style="background:#E24B4A"></span>Stopp</div>
+      <div class="bb" data-cmd="wait" data-s="1"><span class="dot" style="background:#888780"></span>Warten</div>
+    </div>
+    <div class="ph">Mein Programm <span id="progCount" style="font-weight:400;color:#bbb;text-transform:none;letter-spacing:0;font-size:11px;"></span></div>
+    <div id="plist">
+      <div id="pempty">Klick auf einen Baustein<br>um ihn hinzuzufügen.</div>
+    </div>
+  </div>
+
+  <div id="right">
+    <div id="statusbar">
+      <button class="rb" id="btnRun" disabled>▶ Starten</button>
+      <button class="xb" id="btnReset">Zurücksetzen</button>
+      <span id="smsg">Warte auf Spielfeld…</span>
+      <span style="font-size:12px;color:#666;">Tempo</span>
+      <input type="range" id="spd" min="1" max="5" value="3" step="1" style="width:80px;">
+      <span id="spv" style="font-size:12px;color:#444;min-width:14px;">3</span>
+    </div>
+    <div id="fa">
+      <div id="no-board">
+        <div class="big">⏳</div>
+        <div>Warte auf Spielfeld<br>vom Lehrer…</div>
+      </div>
+      <canvas id="cv" style="display:none;"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROT=[-Math.PI/2,0,Math.PI/2,Math.PI];
+const FCFG={red:{fill:'#fca5a5',stroke:'#ef4444',label:'ROT'},blue:{fill:'#93c5fd',stroke:'#3b82f6',label:'BLAU'},green:{fill:'#86efac',stroke:'#22c55e',label:'GRÜN'},yellow:{fill:'#fde047',stroke:'#ca8a04',label:'GELB'}};
+const CLR={fwd:'#378ADD',bwd:'#D85A30',left:'#1D9E75',rght:'#BA7517',stp:'#E24B4A',wait:'#888780'};
+const LBL={fwd:'Vorwärts',bwd:'Rückwärts',left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',wait:'Warten'};
+
+// get slug from URL
+const slug=location.pathname.split('/').pop();
+const socket=io();
+let board=null, prog=[], running=false;
+let car={x:0,y:0,dir:0};
+
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+
+socket.on('connect',()=>document.getElementById('connDot').classList.add('on'));
+socket.on('disconnect',()=>document.getElementById('connDot').classList.remove('on'));
+
+socket.emit('schueler:join',{slug});
+socket.on('schueler:error',msg=>{ document.getElementById('smsg').textContent='Fehler: '+msg; });
+
+socket.on('schueler:init',s=>{
+  document.getElementById('studentName').textContent=s.name;
+  prog=s.prog||[];
+  renderProg();
+});
+
+socket.on('state:board',b=>{
+  board=b;
+  car={x:b.startX,y:b.startY,dir:b.startDir};
+  document.getElementById('no-board').style.display='none';
+  cv.style.display='block';
+  document.getElementById('btnRun').disabled=false;
+  setSt('Bereit!');
+  if(b.task){document.getElementById('taskText').textContent=b.task;document.getElementById('task-banner').classList.remove('hidden');}
+  draw();
+});
+
+socket.on('student:reset',()=>{
+  if(!board)return;
+  car={x:board.startX,y:board.startY,dir:board.startDir};
+  running=false; hl(-1); draw(); setSt('Zurückgesetzt vom Lehrer.');
+});
+
+function cs(){if(!board)return 40;const fa=document.getElementById('fa');return Math.floor(Math.min(fa.clientWidth-32,fa.clientHeight-32,500)/board.gridN);}
+
+function draw(){
+  if(!board)return;
+  const S=cs(),N=board.gridN,dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  cv.width=S*N; cv.height=S*N;
+  ctx.fillStyle=dk?'#1a1a1a':'#F1EFE8'; ctx.fillRect(0,0,cv.width,cv.height);
+  for(let r=0;r<N;r++) for(let c=0;c<N;c++){ctx.strokeStyle=dk?'#2e2e2e':'#D3D1C7';ctx.lineWidth=.5;ctx.strokeRect(c*S,r*S,S,S);}
+  board.colorCells.forEach(cc=>{const f=FCFG[cc.color];if(!f)return;ctx.fillStyle=f.fill;ctx.fillRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.strokeStyle=f.stroke;ctx.lineWidth=1.5;ctx.strokeRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.fillStyle=f.stroke;ctx.font=`bold ${Math.floor(S*.28)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.label,cc.x*S+S/2,cc.y*S+S/2);});
+  ctx.fillStyle=dk?'#1a3028':'#EAF3DE'; ctx.fillRect(board.goalX*S+1,board.goalY*S+1,S-2,S-2);
+  ctx.strokeStyle='#1D9E75'; ctx.lineWidth=2; ctx.strokeRect(board.goalX*S+1,board.goalY*S+1,S-2,S-2);
+  ctx.fillStyle='#1D9E75'; ctx.font=`${Math.floor(S*.48)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',board.goalX*S+S/2,board.goalY*S+S/2);
+  board.obstacles.forEach(o=>{ctx.fillStyle=dk?'#2e1a1a':'#FAECE7';ctx.fillRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.strokeStyle='#D85A30';ctx.lineWidth=1.5;ctx.strokeRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.fillStyle='#D85A30';ctx.font=`${Math.floor(S*.42)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',o.x*S+S/2,o.y*S+S/2);});
+  // start indicator (faint)
+  ctx.fillStyle='rgba(59,130,246,0.08)'; ctx.fillRect(board.startX*S+1,board.startY*S+1,S-2,S-2);
+  // car
+  const cx2=car.x*S+S/2,cy2=car.y*S+S/2,R=S*.34;
+  ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(ROT[car.dir]);
+  ctx.beginPath(); ctx.moveTo(R,0); ctx.lineTo(-R*.7,R*.65); ctx.lineTo(-R*.7,-R*.65); ctx.closePath();
+  ctx.fillStyle='#185FA5'; ctx.fill(); ctx.strokeStyle=dk?'#93c5fd':'#E6F1FB'; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
+}
+
+// palette
+document.getElementById('palette').addEventListener('click',e=>{
+  const b=e.target.closest('.bb'); if(!b||running)return;
+  prog.push({cmd:b.dataset.cmd,steps:parseInt(b.dataset.s)});
+  renderProg();
+  syncProg();
+  const l=document.getElementById('plist'); l.scrollTop=l.scrollHeight;
+});
+
+function renderProg(){
+  const list=document.getElementById('plist'),empty=document.getElementById('pempty');
+  list.querySelectorAll('.pb').forEach(e=>e.remove());
+  document.getElementById('progCount').textContent=prog.length?'('+prog.length+')':'';
+  if(!prog.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  prog.forEach((item,i)=>{
+    const el=document.createElement('div'); el.className='pb';
+    const hs=item.cmd!=='stp'&&item.cmd!=='wait';
+    el.innerHTML=`<span class="dot" style="background:${CLR[item.cmd]};width:11px;height:11px;border-radius:50%;flex-shrink:0;"></span>
+<span style="flex:1;">${LBL[item.cmd]}</span>
+${hs?`<div class="ps"><button data-i="${i}" data-d="-1">−</button><span>${item.steps}</span><button data-i="${i}" data-d="1">+</button></div>`:''}
+<span class="del" data-i="${i}">×</span>`;
+    list.appendChild(el);
+  });
+}
+
+document.getElementById('plist').addEventListener('click',e=>{
+  if(running)return;
+  const del=e.target.closest('.del');
+  if(del){prog.splice(parseInt(del.dataset.i),1);renderProg();syncProg();return;}
+  const db=e.target.closest('[data-d]');
+  if(db){const i=parseInt(db.dataset.i),d=parseInt(db.dataset.d);prog[i].steps=Math.max(1,prog[i].steps+d);renderProg();syncProg();}
+});
+
+function syncProg(){socket.emit('schueler:update_prog',{slug,prog});}
+function syncCar(status,goalReached){socket.emit('schueler:update_car',{slug,x:car.x,y:car.y,dir:car.dir,status,goalReached,running});}
+
+function setSt(m){document.getElementById('smsg').textContent=m;}
+function hl(i){document.getElementById('plist').querySelectorAll('.pb').forEach((el,j)=>el.classList.toggle('active',j===i));}
+function speedMs(){return[650,420,270,150,80][parseInt(document.getElementById('spd').value)-1];}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function runProg(){
+  if(running||!board||!prog.length)return;
+  running=true; document.getElementById('btnRun').disabled=true;
+  car={x:board.startX,y:board.startY,dir:board.startDir};
+  draw(); setSt('Programm läuft …'); syncCar('laeuft',false);
+
+  for(let i=0;i<prog.length;i++){
+    hl(i); const{cmd,steps}=prog[i]; const D=speedMs();
+    if(cmd==='stp'){setSt('Stopp!');syncCar('stp',false);await sleep(D*1.5);break;}
+    if(cmd==='wait'){setSt('Warte …');for(let s=0;s<steps;s++)await sleep(D);continue;}
+    if(cmd==='left'||cmd==='rght'){
+      for(let s=0;s<steps;s++){car.dir=(car.dir+(cmd==='left'?3:1))%4;draw();syncCar('laeuft',false);await sleep(D);}
+      continue;
+    }
+    for(let s=0;s<steps;s++){
+      const DELTA=[[0,-1],[1,0],[0,1],[-1,0]];
+      const[ddx,ddy]=DELTA[car.dir];
+      const dx=cmd==='bwd'?-ddx:ddx,dy=cmd==='bwd'?-ddy:ddy;
+      const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
+      if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand erreicht – Stopp!');syncCar('rand',false);draw();stopRun();return;}
+      if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis! Auto stoppt.');syncCar('hindernis',false);draw();stopRun();return;}
+      car.x=nx; car.y=ny;
+      const cc=board.colorCells.find(c=>c.x===car.x&&c.y===car.y);
+      if(cc)setSt('Farbfeld: '+cc.color.toUpperCase());
+      draw();
+      if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel erreicht! Super! ★');syncCar('ziel',true);stopRun();return;}
+      syncCar('laeuft',false);
+      await sleep(D);
+    }
+  }
+  hl(-1); setSt('Fertig.'); syncCar('bereit',false); stopRun();
+}
+
+function stopRun(){running=false;hl(-1);document.getElementById('btnRun').disabled=!board;}
+
+document.getElementById('btnRun').addEventListener('click',runProg);
+document.getElementById('btnReset').addEventListener('click',()=>{
+  if(!board||running)return;
+  car={x:board.startX,y:board.startY,dir:board.startDir};
+  hl(-1); setSt('Zurückgesetzt.'); draw(); syncCar('bereit',false);
+});
+document.getElementById('spd').addEventListener('input',function(){document.getElementById('spv').textContent=this.value;});
+window.addEventListener('resize',draw);
+</script>
+</body>
+</html>
