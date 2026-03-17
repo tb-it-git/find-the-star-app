@@ -8,46 +8,86 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:system-ui,sans-serif;background:#f0ede8;color:#1a1a1a;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
-
 header{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#1e3a5f;border-bottom:1px solid #1e40af;flex-shrink:0;}
 header h1{font-size:15px;font-weight:600;color:#f1f5f9;}
 .badge{font-size:11px;background:#2563eb;color:#fff;padding:2px 9px;border-radius:999px;}
 .hsep{flex:1;}
 #connDot{width:9px;height:9px;border-radius:50%;background:#ef4444;transition:background .3s;}
 #connDot.on{background:#22c55e;}
-
 #task-banner{padding:7px 16px;background:#eff6ff;border-bottom:1px solid #bfdbfe;font-size:13px;color:#1e40af;font-weight:500;display:flex;align-items:center;gap:8px;flex-shrink:0;}
 #task-banner.hidden{display:none;}
-
 #app{display:grid;grid-template-columns:260px 1fr;flex:1;overflow:hidden;}
 #right{display:flex;flex-direction:column;overflow:hidden;}
-
 #panel{border-right:1px solid #ddd;display:flex;flex-direction:column;overflow:hidden;background:#fafafa;}
 .ph{padding:9px 12px 6px;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid #e8e8e8;flex-shrink:0;}
-
 .pal-hint{font-size:10px;color:#94a3b8;padding:5px 8px 2px;text-align:center;}
-#palette{padding:8px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #e8e8e8;flex-shrink:0;}
-.bb{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;cursor:pointer;font-size:13px;font-weight:500;color:#1a1a1a;transition:background .1s,transform .1s;user-select:none;}
+#palette{padding:8px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #e8e8e8;flex-shrink:0;overflow-y:auto;}
+.bb{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;cursor:pointer;font-size:12px;font-weight:500;color:#1a1a1a;transition:background .1s,transform .1s;user-select:none;}
 .bb:hover{background:#e8f0fe;border-color:#93c5fd;}
 .bb:active{transform:scale(.97);}
-.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
-
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 #plist{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;}
 #pempty{font-size:12px;color:#aaa;text-align:center;margin-top:24px;line-height:1.7;}
-.pb{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;border:1px solid #e8e8e8;background:#f7f7f7;font-size:12px;font-weight:500;color:#1a1a1a;transition:all .15s;}
+
+/* ── normal block ── */
+.pb{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;border:1px solid #e8e8e8;background:#f7f7f7;font-size:12px;font-weight:500;color:#1a1a1a;transition:all .15s;flex-wrap:wrap;}
 .pb.active{border-color:#2563eb;background:#eff6ff;}
-.pb .del{margin-left:auto;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 2px;flex-shrink:0;}
+.pb.pb-sensor{border-color:#a855f7;background:#faf5ff;}
+.pb.pb-sensor.active{border-color:#7c3aed;background:#ede9fe;}
+.pb .del{margin-left:auto;cursor:pointer;color:#bbb;font-size:15px;line-height:1;padding:0 2px;flex-shrink:0;}
 .pb .del:hover{color:#e24b4a;}
 .ps{display:flex;align-items:center;gap:3px;}
-.ps button{width:20px;height:20px;border-radius:5px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;color:#333;display:flex;align-items:center;justify-content:center;}
+.ps button{width:19px;height:19px;border-radius:4px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;color:#333;display:flex;align-items:center;justify-content:center;}
 .ps button:hover{background:#f0f0f0;}
 .ps span{font-size:12px;min-width:16px;text-align:center;color:#333;}
 
+/* ── sensor ── */
+.sensor-row{display:flex;align-items:center;gap:4px;width:100%;flex-wrap:wrap;}
+.sensor-row .sl{font-size:11px;color:#7c3aed;font-weight:600;}
+.sensor-sel{border:1px solid #d8b4fe;border-radius:5px;background:#f5f3ff;color:#3b0764;font-size:11px;padding:2px 4px;cursor:pointer;font-weight:500;}
+
+/* ── loop (count) ── */
+.loop-wrap{border:2px solid #f59e0b;border-radius:10px;background:#fffbeb;padding:5px 5px 5px 7px;display:flex;flex-direction:column;gap:3px;}
+.loop-wrap.active{border-color:#2563eb !important;background:#eff6ff !important;}
+.loop-wrap .loop-wrap{border-color:#fb923c;background:#fff7ed;}
+.loop-header{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#92400e;flex-wrap:wrap;}
+.loop-header .lhd{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.loop-count{display:flex;align-items:center;gap:2px;}
+.loop-count button{width:18px;height:18px;border-radius:4px;border:1px solid #fcd34d;background:#fef3c7;cursor:pointer;font-size:11px;color:#92400e;display:flex;align-items:center;justify-content:center;}
+.loop-count button:hover{background:#fde68a;}
+.loop-count span{font-size:11px;min-width:22px;text-align:center;color:#92400e;font-weight:700;}
+.loop-del{cursor:pointer;color:#fcd34d;font-size:15px;line-height:1;padding:0 2px;margin-left:auto;}
+.loop-del:hover{color:#ef4444;}
+.loop-body{display:flex;flex-direction:column;gap:3px;padding-left:8px;border-left:2px solid #fcd34d;margin-left:3px;min-height:16px;}
+.loop-body-empty{font-size:10px;color:#d97706;text-align:center;padding:4px 0;font-style:italic;}
+.loop-add{display:flex;flex-wrap:wrap;gap:2px;padding-top:2px;}
+.loop-add-btn{padding:2px 6px;border-radius:4px;border:1px solid #fcd34d;background:#fef3c7;cursor:pointer;font-size:9px;font-weight:700;color:#92400e;transition:background .1s;}
+.loop-add-btn:hover{background:#fde68a;}
+.loop-footer{font-size:9px;color:#d97706;text-align:right;}
+
+/* ── until loop – distinct teal colour ── */
+.until-wrap{border:2px solid #0d9488;border-radius:10px;background:#f0fdfa;padding:5px 5px 5px 7px;display:flex;flex-direction:column;gap:3px;}
+.until-wrap.active{border-color:#2563eb !important;background:#eff6ff !important;}
+.until-wrap .loop-body{border-left-color:#5eead4;}
+.until-header{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#0f766e;flex-wrap:wrap;}
+.until-header .uhd{width:10px;height:10px;border-radius:50%;background:#0d9488;flex-shrink:0;}
+.until-del{cursor:pointer;color:#5eead4;font-size:15px;line-height:1;padding:0 2px;margin-left:auto;}
+.until-del:hover{color:#ef4444;}
+.until-footer{border-top:1px dashed #5eead4;margin-top:2px;padding-top:4px;display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:#0f766e;flex-wrap:wrap;}
+.until-footer .ufl{font-size:10px;color:#0d9488;font-weight:600;}
+.until-sel{border:1px solid #5eead4;border-radius:5px;background:#ccfbf1;color:#0f766e;font-size:11px;padding:2px 4px;cursor:pointer;font-weight:600;}
+.until-add{display:flex;flex-wrap:wrap;gap:2px;padding-top:2px;}
+.until-add-btn{padding:2px 6px;border-radius:4px;border:1px solid #5eead4;background:#ccfbf1;cursor:pointer;font-size:9px;font-weight:700;color:#0f766e;transition:background .1s;}
+.until-add-btn:hover{background:#99f6e4;}
+.until-footer-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+
+/* field */
 #fa{display:flex;align-items:center;justify-content:center;padding:16px;background:#f0ede8;overflow:hidden;flex:1;}
 canvas#cv{display:block;border-radius:5px;}
 #no-board{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#94a3b8;text-align:center;font-size:14px;line-height:1.6;padding:40px;}
 #no-board .big{font-size:48px;}
 
+/* statusbar */
 #statusbar{display:flex;align-items:center;gap:10px;padding:0 16px;padding-bottom:env(safe-area-inset-bottom,0px);border-bottom:1px solid #e8e8e8;background:#fafafa;font-size:12px;color:#666;flex-shrink:0;min-height:52px;}
 #smsg{flex:1;}
 .rb{padding:6px 16px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#1a1a1a;transition:background .1s;}
@@ -63,8 +103,30 @@ canvas#cv{display:block;border-radius:5px;}
   .bb:hover{background:#1e3a5f;border-color:#3b82f6;}
   .pb{background:#252525;border-color:#333;color:#f0f0f0;}
   .pb.active{border-color:#3b82f6;background:#1e3a5f;}
+  .pb.pb-sensor{border-color:#7c3aed;background:#2d1b4e;}
+  .pb.pb-sensor.active{border-color:#a855f7;background:#3b1f6b;}
   .pb .del{color:#555;}
   .ps button{background:#2a2a2a;border-color:#3a3a3a;color:#ccc;}
+  .sensor-sel{background:#1e1432;border-color:#7c3aed;color:#d8b4fe;}
+  .loop-wrap{border-color:#d97706;background:#1c1506;}
+  .loop-wrap .loop-wrap{border-color:#ea580c;background:#1a0e00;}
+  .loop-wrap.active{border-color:#3b82f6 !important;background:#0f1e3a !important;}
+  .loop-header{color:#fcd34d;}
+  .loop-count button{background:#292007;border-color:#d97706;color:#fcd34d;}
+  .loop-count span{color:#fcd34d;}
+  .loop-body{border-left-color:#d97706;}
+  .loop-add-btn{background:#1c1506;border-color:#d97706;color:#fcd34d;}
+  .loop-add-btn:hover{background:#292007;}
+  .loop-footer{color:#d97706;}
+  .until-wrap{border-color:#0d9488;background:#011c1a;}
+  .until-wrap.active{border-color:#3b82f6 !important;background:#0f1e3a !important;}
+  .until-wrap .loop-body{border-left-color:#0d9488;}
+  .until-header{color:#5eead4;}
+  .until-footer{border-top-color:#0d9488;}
+  .until-footer{color:#5eead4;}
+  .until-sel{background:#022c29;border-color:#0d9488;color:#5eead4;}
+  .until-add-btn{background:#011c1a;border-color:#0d9488;color:#5eead4;}
+  .until-add-btn:hover{background:#022c29;}
   #fa{background:#161616;}
   #statusbar{background:#1e1e1e;border-color:#2e2e2e;}
   .rb{background:#252525;border-color:#3a3a3a;color:#f0f0f0;}
@@ -83,27 +145,25 @@ canvas#cv{display:block;border-radius:5px;}
   <div class="hsep"></div>
   <div id="connDot" title="Verbindungsstatus"></div>
 </header>
-
-<div id="task-banner" class="hidden">
-  <span>🎯</span><span id="taskText"></span>
-</div>
+<div id="task-banner" class="hidden"><span>🎯</span><span id="taskText"></span></div>
 
 <div id="app">
   <div id="panel">
     <div class="ph">Bausteine</div>
     <div class="pal-hint">↓ Klicken zum Hinzufügen</div>
     <div id="palette">
-      <div class="bb" data-cmd="fwd"  data-s="1"><span class="dot" style="background:#378ADD"></span>Vorwärts</div>
-      <div class="bb" data-cmd="bwd"  data-s="1"><span class="dot" style="background:#D85A30"></span>Rückwärts</div>
-      <div class="bb" data-cmd="left" data-s="1"><span class="dot" style="background:#1D9E75"></span>Links drehen</div>
-      <div class="bb" data-cmd="rght" data-s="1"><span class="dot" style="background:#BA7517"></span>Rechts drehen</div>
-      <div class="bb" data-cmd="stp"  data-s="0"><span class="dot" style="background:#E24B4A"></span>Stopp</div>
-      <div class="bb" data-cmd="wait" data-s="1"><span class="dot" style="background:#888780"></span>Warten</div>
+      <div class="bb" data-cmd="fwd" ><span class="dot" style="background:#378ADD"></span>Vorwärts</div>
+      <div class="bb" data-cmd="bwd" ><span class="dot" style="background:#D85A30"></span>Rückwärts</div>
+      <div class="bb" data-cmd="left"><span class="dot" style="background:#1D9E75"></span>Links drehen</div>
+      <div class="bb" data-cmd="rght"><span class="dot" style="background:#BA7517"></span>Rechts drehen</div>
+      <div class="bb" data-cmd="stp" ><span class="dot" style="background:#E24B4A"></span>Stopp</div>
+      <div class="bb" data-cmd="wait"><span class="dot" style="background:#888780"></span>Warten</div>
+      <div class="bb" data-cmd="sensor"     style="border-color:#a855f7;color:#6b21a8;"><span class="dot" style="background:#a855f7"></span>Wenn Farbe…</div>
+      <div class="bb" data-cmd="loop_count" style="border-color:#f59e0b;color:#92400e;"><span class="dot" style="background:#f59e0b"></span>Wiederhole X mal</div>
+      <div class="bb" data-cmd="loop_until" style="border-color:#0d9488;color:#0f766e;"><span class="dot" style="background:#0d9488"></span>Mache … bis …</div>
     </div>
     <div class="ph">Mein Programm <span id="progCount" style="font-weight:400;color:#bbb;text-transform:none;letter-spacing:0;font-size:11px;"></span></div>
-    <div id="plist">
-      <div id="pempty">Klick auf einen Baustein<br>um ihn hinzuzufügen.</div>
-    </div>
+    <div id="plist"><div id="pempty">Klick auf einen Baustein<br>um ihn hinzuzufügen.</div></div>
   </div>
 
   <div id="right">
@@ -116,162 +176,414 @@ canvas#cv{display:block;border-radius:5px;}
       <span id="spv" style="font-size:12px;color:#444;min-width:14px;">3</span>
     </div>
     <div id="fa">
-      <div id="no-board">
-        <div class="big">⏳</div>
-        <div>Warte auf Spielfeld<br>vom Lehrer…</div>
-      </div>
+      <div id="no-board"><div class="big">⏳</div><div>Warte auf Spielfeld<br>vom Lehrer…</div></div>
       <canvas id="cv" style="display:none;"></canvas>
     </div>
   </div>
 </div>
 
 <script>
-const ROT=[-Math.PI/2,0,Math.PI/2,Math.PI];
-const FCFG={red:{fill:'#fca5a5',stroke:'#ef4444',label:'ROT'},blue:{fill:'#93c5fd',stroke:'#3b82f6',label:'BLAU'},green:{fill:'#86efac',stroke:'#22c55e',label:'GRÜN'},yellow:{fill:'#fde047',stroke:'#ca8a04',label:'GELB'}};
-const CLR={fwd:'#378ADD',bwd:'#D85A30',left:'#1D9E75',rght:'#BA7517',stp:'#E24B4A',wait:'#888780'};
-const LBL={fwd:'Vorwärts',bwd:'Rückwärts',left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',wait:'Warten'};
+// ── CONSTANTS ──
+const ROT   = [-Math.PI/2,0,Math.PI/2,Math.PI];
+const DELTA = [[0,-1],[1,0],[0,1],[-1,0]];
+const FCFG  = {red:{fill:'#fca5a5',stroke:'#ef4444',label:'ROT'},blue:{fill:'#93c5fd',stroke:'#3b82f6',label:'BLAU'},green:{fill:'#86efac',stroke:'#22c55e',label:'GRÜN'},yellow:{fill:'#fde047',stroke:'#ca8a04',label:'GELB'}};
+const CLR   = {fwd:'#378ADD',bwd:'#D85A30',left:'#1D9E75',rght:'#BA7517',stp:'#E24B4A',wait:'#888780',sensor:'#a855f7'};
+const LBL   = {fwd:'Vorwärts',bwd:'Rückwärts',left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',wait:'Warten'};
 
-// get slug from URL
-const slug=location.pathname.split('/').pop();
-const socket=io();
-let board=null, prog=[], running=false;
-let car={x:0,y:0,dir:0};
+const SENSOR_COLORS     = ['red','blue','green','yellow'];
+const SENSOR_COLOR_LBL  = {red:'🔴 Rot',blue:'🔵 Blau',green:'🟢 Grün',yellow:'🟡 Gelb'};
+const SENSOR_ACTIONS    = ['left','rght','stp','fwd','bwd'];
+const SENSOR_ACTION_LBL = {left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',fwd:'Vorwärts',bwd:'Rückwärts'};
 
-const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+// Until conditions
+const UNTIL_TYPES    = ['goal','color','obstacle'];
+const UNTIL_TYPE_LBL = {goal:'Ziel ★ erreicht',color:'Farbfeld',obstacle:'Hindernis voraus'};
 
-socket.on('connect',()=>document.getElementById('connDot').classList.add('on'));
-socket.on('disconnect',()=>document.getElementById('connDot').classList.remove('on'));
+const MINI = {fwd:'↑Vor',bwd:'↓Zurück',left:'↰Li',rght:'↱Re',stp:'■Stop',wait:'⏸Wait',sensor:'◆Sensor',loop_count:'↺×',loop_until:'↺bis'};
+const MAX_SAFETY = 200; // max single-block executions inside any until loop
 
+const slug   = location.pathname.split('/').pop();
+const socket = io();
+let board = null, prog = [], running = false;
+let car = {x:0,y:0,dir:0};
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+// ── SOCKET ──
+socket.on('connect',    () => document.getElementById('connDot').classList.add('on'));
+socket.on('disconnect', () => document.getElementById('connDot').classList.remove('on'));
 socket.emit('schueler:join',{slug});
-socket.on('schueler:error',msg=>{ document.getElementById('smsg').textContent='Fehler: '+msg; });
-
-socket.on('schueler:init',s=>{
-  document.getElementById('studentName').textContent=s.name;
-  prog=s.prog||[];
-  renderProg();
+socket.on('schueler:error', msg => setSt('Fehler: '+msg));
+socket.on('schueler:init', s => {
+  document.getElementById('studentName').textContent = s.name;
+  prog = s.prog||[]; renderProg();
 });
-
-socket.on('state:board',b=>{
-  board=b;
-  car={x:b.startX,y:b.startY,dir:b.startDir};
-  document.getElementById('no-board').style.display='none';
-  cv.style.display='block';
-  document.getElementById('btnRun').disabled=false;
+socket.on('state:board', b => {
+  board = b; car = {x:b.startX,y:b.startY,dir:b.startDir};
+  document.getElementById('no-board').style.display = 'none';
+  cv.style.display = 'block';
+  document.getElementById('btnRun').disabled = false;
   setSt('Bereit!');
-  if(b.task){document.getElementById('taskText').textContent=b.task;document.getElementById('task-banner').classList.remove('hidden');}
+  if(b.task){ document.getElementById('taskText').textContent=b.task; document.getElementById('task-banner').classList.remove('hidden'); }
   draw();
 });
-
-socket.on('student:reset',()=>{
-  if(!board)return;
-  car={x:board.startX,y:board.startY,dir:board.startDir};
-  running=false; hl(-1); draw(); setSt('Zurückgesetzt vom Lehrer.');
+socket.on('student:reset', () => {
+  if(!board) return;
+  car = {x:board.startX,y:board.startY,dir:board.startDir};
+  running=false; hlClear(); draw(); setSt('Zurückgesetzt vom Lehrer.');
 });
 
-function cs(){if(!board)return 40;const fa=document.getElementById('fa');return Math.floor(Math.min(fa.clientWidth-32,fa.clientHeight-32,500)/board.gridN);}
-
+// ── DRAW ──
+function cs(){ const fa=document.getElementById('fa'); return board?Math.floor(Math.min(fa.clientWidth-32,fa.clientHeight-32,500)/board.gridN):40; }
 function draw(){
-  if(!board)return;
+  if(!board) return;
   const S=cs(),N=board.gridN,dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
   cv.width=S*N; cv.height=S*N;
   ctx.fillStyle=dk?'#1a1a1a':'#F1EFE8'; ctx.fillRect(0,0,cv.width,cv.height);
   for(let r=0;r<N;r++) for(let c=0;c<N;c++){ctx.strokeStyle=dk?'#2e2e2e':'#D3D1C7';ctx.lineWidth=.5;ctx.strokeRect(c*S,r*S,S,S);}
   board.colorCells.forEach(cc=>{const f=FCFG[cc.color];if(!f)return;ctx.fillStyle=f.fill;ctx.fillRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.strokeStyle=f.stroke;ctx.lineWidth=1.5;ctx.strokeRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.fillStyle=f.stroke;ctx.font=`bold ${Math.floor(S*.28)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.label,cc.x*S+S/2,cc.y*S+S/2);});
   ctx.fillStyle=dk?'#1a3028':'#EAF3DE'; ctx.fillRect(board.goalX*S+1,board.goalY*S+1,S-2,S-2);
-  ctx.strokeStyle='#1D9E75'; ctx.lineWidth=2; ctx.strokeRect(board.goalX*S+1,board.goalY*S+1,S-2,S-2);
-  ctx.fillStyle='#1D9E75'; ctx.font=`${Math.floor(S*.48)}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('★',board.goalX*S+S/2,board.goalY*S+S/2);
+  ctx.strokeStyle='#1D9E75';ctx.lineWidth=2;ctx.strokeRect(board.goalX*S+1,board.goalY*S+1,S-2,S-2);
+  ctx.fillStyle='#1D9E75';ctx.font=`${Math.floor(S*.48)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('★',board.goalX*S+S/2,board.goalY*S+S/2);
   board.obstacles.forEach(o=>{ctx.fillStyle=dk?'#2e1a1a':'#FAECE7';ctx.fillRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.strokeStyle='#D85A30';ctx.lineWidth=1.5;ctx.strokeRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.fillStyle='#D85A30';ctx.font=`${Math.floor(S*.42)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',o.x*S+S/2,o.y*S+S/2);});
-  // start indicator (faint)
-  ctx.fillStyle='rgba(59,130,246,0.08)'; ctx.fillRect(board.startX*S+1,board.startY*S+1,S-2,S-2);
-  // car
+  ctx.fillStyle='rgba(59,130,246,0.08)';ctx.fillRect(board.startX*S+1,board.startY*S+1,S-2,S-2);
   const cx2=car.x*S+S/2,cy2=car.y*S+S/2,R=S*.34;
-  ctx.save(); ctx.translate(cx2,cy2); ctx.rotate(ROT[car.dir]);
-  ctx.beginPath(); ctx.moveTo(R,0); ctx.lineTo(-R*.7,R*.65); ctx.lineTo(-R*.7,-R*.65); ctx.closePath();
-  ctx.fillStyle='#185FA5'; ctx.fill(); ctx.strokeStyle=dk?'#93c5fd':'#E6F1FB'; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
+  ctx.save();ctx.translate(cx2,cy2);ctx.rotate(ROT[car.dir]);
+  ctx.beginPath();ctx.moveTo(R,0);ctx.lineTo(-R*.7,R*.65);ctx.lineTo(-R*.7,-R*.65);ctx.closePath();
+  ctx.fillStyle='#185FA5';ctx.fill();ctx.strokeStyle=dk?'#93c5fd':'#E6F1FB';ctx.lineWidth=1.5;ctx.stroke();ctx.restore();
 }
 
-// palette
-document.getElementById('palette').addEventListener('click',e=>{
-  const b=e.target.closest('.bb'); if(!b||running)return;
-  prog.push({cmd:b.dataset.cmd,steps:parseInt(b.dataset.s)});
-  renderProg();
-  syncProg();
-  const l=document.getElementById('plist'); l.scrollTop=l.scrollHeight;
-});
+// ── ITEM FACTORIES ──
+const newSensor    = ()   => ({cmd:'sensor',color:'red',action:'left',elseAction:'stp'});
+const newLoopCount = ()   => ({cmd:'loop_count',count:3,body:[]});
+const newLoopUntil = ()   => ({cmd:'loop_until',untilType:'goal',untilColor:'red',body:[]});
+const isLoop       = cmd  => cmd==='loop_count'||cmd==='loop_until';
 
-function renderProg(){
-  const list=document.getElementById('plist'),empty=document.getElementById('pempty');
-  list.querySelectorAll('.pb').forEach(e=>e.remove());
-  document.getElementById('progCount').textContent=prog.length?'('+prog.length+')':'';
-  if(!prog.length){empty.style.display='block';return;}
-  empty.style.display='none';
-  prog.forEach((item,i)=>{
-    const el=document.createElement('div'); el.className='pb';
+// ── RESOLVE PATH → {arr, idx} ──
+// path = [i]          → top level
+// path = [i, bi]      → inside outer loop body
+// path = [i, bi, bi2] → inside nested loop body (outer[i].body[bi] is a loop, inner body[bi2])
+function resolve(path){
+  if(path.length===1) return {arr:prog,          idx:path[0]};
+  if(path.length===2) return {arr:prog[path[0]].body, idx:path[1]};
+  return                     {arr:prog[path[0]].body[path[1]].body, idx:path[2]};
+}
+
+// ── RENDER: simple block ──
+function renderPbBlock(item, path){
+  const el  = document.createElement('div');
+  const ps  = JSON.stringify(path);
+  if(item.cmd==='sensor'){
+    el.className='pb pb-sensor';
+    const co=SENSOR_COLORS.map(c=>`<option value="${c}"${item.color===c?' selected':''}>${SENSOR_COLOR_LBL[c]}</option>`).join('');
+    const ao=SENSOR_ACTIONS.map(a=>`<option value="${a}"${item.action===a?' selected':''}>${SENSOR_ACTION_LBL[a]}</option>`).join('');
+    const eo=SENSOR_ACTIONS.map(a=>`<option value="${a}"${(item.elseAction||'stp')===a?' selected':''}>${SENSOR_ACTION_LBL[a]}</option>`).join('');
+    el.innerHTML=`<span class="dot" style="background:#a855f7;flex-shrink:0;align-self:flex-start;margin-top:3px;"></span>
+<div style="flex:1;display:flex;flex-direction:column;gap:3px;">
+  <div class="sensor-row"><span class="sl">Wenn</span><select class="sensor-sel" data-path='${ps}' data-field="color">${co}</select><span class="sl">→</span><select class="sensor-sel" data-path='${ps}' data-field="action">${ao}</select></div>
+  <div class="sensor-row"><span class="sl" style="color:#94a3b8;">Sonst</span><span class="sl" style="color:#94a3b8;">→</span><select class="sensor-sel" data-path='${ps}' data-field="elseAction" style="border-color:#cbd5e1;background:#f8fafc;color:#475569;">${eo}</select></div>
+</div><span class="del" data-path='${ps}' style="align-self:flex-start;margin-top:1px;">×</span>`;
+  } else {
+    el.className='pb';
     const hs=item.cmd!=='stp'&&item.cmd!=='wait';
-    el.innerHTML=`<span class="dot" style="background:${CLR[item.cmd]};width:11px;height:11px;border-radius:50%;flex-shrink:0;"></span>
+    el.innerHTML=`<span class="dot" style="background:${CLR[item.cmd]};flex-shrink:0;"></span>
 <span style="flex:1;">${LBL[item.cmd]}</span>
-${hs?`<div class="ps"><button data-i="${i}" data-d="-1">−</button><span>${item.steps}</span><button data-i="${i}" data-d="1">+</button></div>`:''}
-<span class="del" data-i="${i}">×</span>`;
-    list.appendChild(el);
+${hs?`<div class="ps"><button class="step-btn" data-path='${ps}' data-d="-1">−</button><span>${item.steps||1}</span><button class="step-btn" data-path='${ps}' data-d="1">+</button></div>`:''}
+<span class="del" data-path='${ps}'>×</span>`;
+  }
+  return el;
+}
+
+// ── RENDER: loop body (shared) ──
+function renderBody(body, pathPrefix, container, allowNested){
+  if(!body||!body.length){
+    const emp=document.createElement('div'); emp.className='loop-body-empty'; emp.textContent='(leer)'; container.appendChild(emp); return;
+  }
+  body.forEach((item,bi)=>{
+    const itemPath=[...pathPrefix,bi];
+    container.appendChild(isLoop(item.cmd)?renderLoopBlock(item,itemPath,false):renderPbBlock(item,itemPath));
   });
 }
 
+// ── RENDER: count loop ──
+function renderLoopBlock(item, path, allowNested=true){
+  const wrap=document.createElement('div');
+  wrap.className='loop-wrap'; wrap.dataset.path=JSON.stringify(path);
+  const ps=JSON.stringify(path);
+  const hdr=document.createElement('div'); hdr.className='loop-header';
+  hdr.innerHTML=`<span class="lhd" style="background:#f59e0b;"></span>
+<span>Wiederhole</span>
+<div class="loop-count"><button data-path='${ps}' data-lcount="-1">−</button><span>${item.count||3}×</span><button data-path='${ps}' data-lcount="1">+</button></div>
+<span style="font-size:10px;color:#b45309;">mal</span>
+<span class="loop-del" data-path='${ps}' data-ldel="1">×</span>`;
+  wrap.appendChild(hdr);
+  const body=document.createElement('div'); body.className='loop-body';
+  renderBody(item.body, path, body, allowNested);
+  wrap.appendChild(body);
+  const addRow=document.createElement('div'); addRow.className='loop-add';
+  ['fwd','bwd','left','rght','stp','wait','sensor',...(allowNested?['loop_count','loop_until']:[])].forEach(cmd=>{
+    const btn=document.createElement('button'); btn.className='loop-add-btn';
+    btn.dataset.path=ps; btn.dataset.ladd=cmd; btn.textContent=MINI[cmd]; addRow.appendChild(btn);
+  });
+  wrap.appendChild(addRow);
+  const foot=document.createElement('div'); foot.className='loop-footer'; foot.textContent='Ende Wiederhole'; wrap.appendChild(foot);
+  return wrap;
+}
+
+// ── RENDER: until loop ──
+function renderUntilBlock(item, path, allowNested=true){
+  const wrap=document.createElement('div');
+  wrap.className='until-wrap'; wrap.dataset.path=JSON.stringify(path);
+  const ps=JSON.stringify(path);
+
+  // header: "Mache"
+  const hdr=document.createElement('div'); hdr.className='until-header';
+  hdr.innerHTML=`<span class="uhd"></span><span>Mache</span>
+<span class="until-del" data-path='${ps}' data-ldel="1">×</span>`;
+  wrap.appendChild(hdr);
+
+  // body
+  const body=document.createElement('div'); body.className='loop-body';
+  renderBody(item.body, path, body, allowNested);
+  wrap.appendChild(body);
+
+  // add-buttons
+  const addRow=document.createElement('div'); addRow.className='until-add';
+  ['fwd','bwd','left','rght','stp','wait','sensor',...(allowNested?['loop_count','loop_until']:[])].forEach(cmd=>{
+    const btn=document.createElement('button'); btn.className='until-add-btn';
+    btn.dataset.path=ps; btn.dataset.ladd=cmd; btn.textContent=MINI[cmd]; addRow.appendChild(btn);
+  });
+  wrap.appendChild(addRow);
+
+  // footer: "bis [condition] eintritt"
+  const foot=document.createElement('div'); foot.className='until-footer';
+  const ut=item.untilType||'goal';
+  const typeOpts=UNTIL_TYPES.map(t=>`<option value="${t}"${ut===t?' selected':''}>${UNTIL_TYPE_LBL[t]}</option>`).join('');
+  const colorOpts=SENSOR_COLORS.map(c=>`<option value="${c}"${(item.untilColor||'red')===c?' selected':''}>${SENSOR_COLOR_LBL[c]}</option>`).join('');
+  foot.innerHTML=`<div class="until-footer-row">
+  <span class="ufl">▶ bis</span>
+  <select class="until-sel" data-path='${ps}' data-field="untilType">${typeOpts}</select>
+  ${ut==='color'?`<select class="until-sel" data-path='${ps}' data-field="untilColor">${colorOpts}</select>`:''}
+  <span class="ufl">eintritt</span>
+</div>`;
+  wrap.appendChild(foot);
+  return wrap;
+}
+
+// ── DISPATCH RENDER ──
+function renderBlock(item,path,allowNested=true){
+  if(item.cmd==='loop_count') return renderLoopBlock(item,path,allowNested);
+  if(item.cmd==='loop_until') return renderUntilBlock(item,path,allowNested);
+  return renderPbBlock(item,path);
+}
+
+function renderProg(){
+  const list=document.getElementById('plist'),empty=document.getElementById('pempty');
+  list.querySelectorAll('.pb,.loop-wrap,.until-wrap').forEach(e=>e.remove());
+  document.getElementById('progCount').textContent=prog.length?'('+prog.length+')':'';
+  if(!prog.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  prog.forEach((item,i)=>list.appendChild(renderBlock(item,[i],true)));
+}
+
+// ── PLIST EVENTS ──
 document.getElementById('plist').addEventListener('click',e=>{
-  if(running)return;
+  if(running) return;
+  // loop count +/-
+  const lcount=e.target.closest('[data-lcount]');
+  if(lcount){const path=JSON.parse(lcount.dataset.path),{arr,idx}=resolve(path);arr[idx].count=Math.max(1,(arr[idx].count||3)+parseInt(lcount.dataset.lcount));renderProg();syncProg();return;}
+  // delete loop/block
+  const ldel=e.target.closest('[data-ldel]');
+  if(ldel){const path=JSON.parse(ldel.dataset.path),{arr,idx}=resolve(path);arr.splice(idx,1);renderProg();syncProg();return;}
+  // delete .del
   const del=e.target.closest('.del');
-  if(del){prog.splice(parseInt(del.dataset.i),1);renderProg();syncProg();return;}
-  const db=e.target.closest('[data-d]');
-  if(db){const i=parseInt(db.dataset.i),d=parseInt(db.dataset.d);prog[i].steps=Math.max(1,prog[i].steps+d);renderProg();syncProg();}
+  if(del&&del.dataset.path){const path=JSON.parse(del.dataset.path),{arr,idx}=resolve(path);arr.splice(idx,1);renderProg();syncProg();return;}
+  // add block inside loop
+  const ladd=e.target.closest('[data-ladd]');
+  if(ladd){
+    const path=JSON.parse(ladd.dataset.path),{arr,idx}=resolve(path);
+    if(!arr[idx].body) arr[idx].body=[];
+    const cmd=ladd.dataset.ladd;
+    if(cmd==='sensor') arr[idx].body.push(newSensor());
+    else if(cmd==='loop_count') arr[idx].body.push(newLoopCount());
+    else if(cmd==='loop_until') arr[idx].body.push(newLoopUntil());
+    else arr[idx].body.push({cmd,steps:1});
+    renderProg();syncProg();
+    document.querySelector(`[data-path='${ladd.dataset.path}']`)?.scrollIntoView({block:'nearest'});
+    return;
+  }
+  // steps +/-
+  const sb=e.target.closest('.step-btn');
+  if(sb&&sb.dataset.path){
+    const path=JSON.parse(sb.dataset.path),{arr,idx}=resolve(path);
+    const field=sb.dataset.field||'steps';
+    arr[idx][field]=Math.max(1,(arr[idx][field]||1)+parseInt(sb.dataset.d));
+    renderProg();syncProg();
+  }
 });
 
+document.getElementById('plist').addEventListener('change',e=>{
+  if(running) return;
+  const sel=e.target.closest('[data-field]');
+  if(!sel||!sel.dataset.path) return;
+  const path=JSON.parse(sel.dataset.path),{arr,idx}=resolve(path);
+  arr[idx][sel.dataset.field]=sel.value;
+  renderProg();syncProg();
+});
+
+// ── PALETTE ──
+document.getElementById('palette').addEventListener('click',e=>{
+  const b=e.target.closest('.bb'); if(!b||running) return;
+  const cmd=b.dataset.cmd;
+  if(cmd==='sensor') prog.push(newSensor());
+  else if(cmd==='loop_count') prog.push(newLoopCount());
+  else if(cmd==='loop_until') prog.push(newLoopUntil());
+  else prog.push({cmd,steps:1});
+  renderProg();syncProg();
+  document.getElementById('plist').scrollTop=99999;
+});
+
+// ── SYNC ──
 function syncProg(){socket.emit('schueler:update_prog',{slug,prog});}
 function syncCar(status,goalReached){socket.emit('schueler:update_car',{slug,x:car.x,y:car.y,dir:car.dir,status,goalReached,running});}
-
 function setSt(m){document.getElementById('smsg').textContent=m;}
-function hl(i){document.getElementById('plist').querySelectorAll('.pb').forEach((el,j)=>el.classList.toggle('active',j===i));}
+function hlClear(){document.getElementById('plist').querySelectorAll('.pb,.loop-wrap,.until-wrap').forEach(el=>el.classList.remove('active'));}
+function hlPath(path){
+  hlClear();
+  if(path.length===1){
+    const els=[...document.getElementById('plist').querySelectorAll(':scope>.pb,:scope>.loop-wrap,:scope>.until-wrap')];
+    els[path[0]]?.classList.add('active');
+  } else {
+    // highlight outer container
+    const outerPs=JSON.stringify([path[0]]);
+    document.querySelector(`[data-path='${outerPs}']`)?.classList.add('active');
+    if(path.length===3){
+      const innerPs=JSON.stringify([path[0],path[1]]);
+      document.querySelector(`[data-path='${innerPs}']`)?.classList.add('active');
+    }
+  }
+}
 function speedMs(){return[650,420,270,150,80][parseInt(document.getElementById('spd').value)-1];}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-async function runProg(){
-  if(running||!board||!prog.length)return;
-  running=true; document.getElementById('btnRun').disabled=true;
-  car={x:board.startX,y:board.startY,dir:board.startDir};
-  draw(); setSt('Programm läuft …'); syncCar('laeuft',false);
-
-  for(let i=0;i<prog.length;i++){
-    hl(i); const{cmd,steps}=prog[i]; const D=speedMs();
-    if(cmd==='stp'){setSt('Stopp!');syncCar('stp',false);await sleep(D*1.5);break;}
-    if(cmd==='wait'){setSt('Warte …');for(let s=0;s<steps;s++)await sleep(D);continue;}
-    if(cmd==='left'||cmd==='rght'){
-      for(let s=0;s<steps;s++){car.dir=(car.dir+(cmd==='left'?3:1))%4;draw();syncCar('laeuft',false);await sleep(D);}
-      continue;
-    }
-    for(let s=0;s<steps;s++){
-      const DELTA=[[0,-1],[1,0],[0,1],[-1,0]];
-      const[ddx,ddy]=DELTA[car.dir];
-      const dx=cmd==='bwd'?-ddx:ddx,dy=cmd==='bwd'?-ddy:ddy;
-      const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
-      if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand erreicht – Stopp!');syncCar('rand',false);draw();stopRun();return;}
-      if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis! Auto stoppt.');syncCar('hindernis',false);draw();stopRun();return;}
-      car.x=nx; car.y=ny;
-      const cc=board.colorCells.find(c=>c.x===car.x&&c.y===car.y);
-      if(cc)setSt('Farbfeld: '+cc.color.toUpperCase());
-      draw();
-      if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel erreicht! Super! ★');syncCar('ziel',true);stopRun();return;}
-      syncCar('laeuft',false);
-      await sleep(D);
-    }
+// ── UNTIL CONDITION CHECK ──
+function checkUntil(item){
+  const ut=item.untilType||'goal';
+  if(ut==='goal') return car.x===board.goalX&&car.y===board.goalY;
+  if(ut==='color'){
+    const col=item.untilColor||'red';
+    return board.colorCells.some(c=>c.x===car.x&&c.y===car.y&&c.color===col);
   }
-  hl(-1); setSt('Fertig.'); syncCar('bereit',false); stopRun();
+  if(ut==='obstacle'){
+    const [ddx,ddy]=DELTA[car.dir];
+    const nx=car.x+ddx,ny=car.y+ddy,N=board.gridN;
+    return nx<0||ny<0||nx>=N||ny>=N||board.obstacles.some(o=>o.x===nx&&o.y===ny);
+  }
+  return false; // steps handled separately
 }
 
-function stopRun(){running=false;hl(-1);document.getElementById('btnRun').disabled=!board;}
+// ── EXECUTE SIMPLE BLOCK ──
+// returns 'ok'|'stop'|'goal'|'crash'
+async function execSimple(item,path){
+  const D=speedMs(); hlPath(path);
+  const cmd=item.cmd;
+  if(cmd==='stp'){setSt('Stopp!');syncCar('stp',false);await sleep(D*1.5);return 'stop';}
+  if(cmd==='wait'){setSt('Warte …');for(let s=0;s<(item.steps||1);s++)await sleep(D);return 'ok';}
+  if(cmd==='sensor'){
+    const on=board.colorCells.find(c=>c.x===car.x&&c.y===car.y&&c.color===item.color);
+    const act=on?item.action:(item.elseAction||'stp');
+    setSt('Sensor: '+SENSOR_COLOR_LBL[item.color]+' '+(on?'erkannt':'nicht da')+' → '+SENSOR_ACTION_LBL[act]);
+    if(act==='left'||act==='rght'){car.dir=(car.dir+(act==='left'?3:1))%4;draw();syncCar('laeuft',false);}
+    else if(act==='stp'){syncCar('stp',false);draw();await sleep(D);return 'stop';}
+    else if(act==='fwd'||act==='bwd'){
+      const [ddx,ddy]=DELTA[car.dir];
+      const dx=act==='bwd'?-ddx:ddx,dy=act==='bwd'?-ddy:ddy;
+      const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
+      if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand – Stopp!');syncCar('rand',false);draw();return 'crash';}
+      if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');syncCar('hindernis',false);draw();return 'crash';}
+      car.x=nx;car.y=ny;draw();
+      if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel! ★');syncCar('ziel',true);return 'goal';}
+      syncCar('laeuft',false);
+    }
+    await sleep(D);return 'ok';
+  }
+  if(cmd==='left'||cmd==='rght'){
+    for(let s=0;s<(item.steps||1);s++){car.dir=(car.dir+(cmd==='left'?3:1))%4;draw();syncCar('laeuft',false);await sleep(D);}
+    return 'ok';
+  }
+  // fwd/bwd
+  for(let s=0;s<(item.steps||1);s++){
+    const [ddx,ddy]=DELTA[car.dir];
+    const dx=cmd==='bwd'?-ddx:ddx,dy=cmd==='bwd'?-ddy:ddy;
+    const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
+    if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand – Stopp!');syncCar('rand',false);draw();return 'crash';}
+    if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');syncCar('hindernis',false);draw();return 'crash';}
+    car.x=nx;car.y=ny;
+    const cc=board.colorCells.find(c=>c.x===car.x&&c.y===car.y);
+    if(cc) setSt('Farbfeld: '+cc.color.toUpperCase());
+    draw();
+    if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel erreicht! Super! ★');syncCar('ziel',true);return 'goal';}
+    syncCar('laeuft',false);
+    await sleep(D);
+  }
+  return 'ok';
+}
+
+// ── EXECUTE BODY ──
+async function execBody(body,pathPrefix){
+  for(let bi=0;bi<(body||[]).length;bi++){
+    const item=body[bi],itemPath=[...pathPrefix,bi];
+    const res=isLoop(item.cmd)?await execLoop(item,itemPath):await execSimple(item,itemPath);
+    if(res!=='ok') return res;
+  }
+  return 'ok';
+}
+
+// ── EXECUTE LOOP ──
+async function execLoop(item,path){
+  if(item.cmd==='loop_count'){
+    const reps=item.count||3;
+    for(let rep=0;rep<reps;rep++){
+      setSt(`Schleife: Durchgang ${rep+1} von ${reps}`);
+      const res=await execBody(item.body,path);
+      if(res!=='ok') return res;
+    }
+    return 'ok';
+  }
+  // loop_until
+  let safety=0;
+  while(safety<MAX_SAFETY){
+    safety++;
+    if(checkUntil(item)){setSt('Bedingung erfüllt → Schleife endet');return 'ok';}
+    if(!item.body||!item.body.length) break;
+    setSt(`Mache … (Durchgang ${safety})`);
+    const res=await execBody(item.body,path);
+    if(res!=='ok') return res;
+    if(checkUntil(item)){setSt('Bedingung erfüllt → Schleife endet');return 'ok';}
+  }
+  setSt('Schleife: Sicherheitsgrenze erreicht');
+  return 'ok';
+}
+
+// ── RUN ──
+async function runProg(){
+  if(running||!board||!prog.length) return;
+  running=true; document.getElementById('btnRun').disabled=true;
+  car={x:board.startX,y:board.startY,dir:board.startDir};
+  draw();setSt('Programm läuft …');syncCar('laeuft',false);
+  const res=await execBody(prog,[]);
+  hlClear();
+  if(res==='ok') setSt('Fertig.');
+  syncCar(res==='goal'?'ziel':res==='stop'?'stp':'bereit',res==='goal');
+  stopRun();
+}
+function stopRun(){running=false;hlClear();document.getElementById('btnRun').disabled=!board;}
 
 document.getElementById('btnRun').addEventListener('click',runProg);
 document.getElementById('btnReset').addEventListener('click',()=>{
-  if(!board||running)return;
+  if(!board||running) return;
   car={x:board.startX,y:board.startY,dir:board.startDir};
-  hl(-1); setSt('Zurückgesetzt.'); draw(); syncCar('bereit',false);
+  hlClear();setSt('Zurückgesetzt.');draw();syncCar('bereit',false);
 });
 document.getElementById('spd').addEventListener('input',function(){document.getElementById('spv').textContent=this.value;});
 window.addEventListener('resize',draw);

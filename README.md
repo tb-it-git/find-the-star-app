@@ -61,4 +61,3 @@ Die Schüler-URLs und QR-Codes werden automatisch im Lehrer-Interface generiert.
 ## Netzwerk
 Alle Geräte müssen im gleichen WLAN sein. Der Server läuft auf Port 3000.
 Firewall ggf. anpassen: `sudo ufw allow 3000`
-# find-the-star-app
