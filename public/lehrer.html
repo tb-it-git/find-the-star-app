@@ -199,7 +199,17 @@ let modalSlug=null;
 // ── SOCKET ──
 socket.emit('lehrer:join');
 socket.on('state:board',(b)=>{board=b;drawEditor();});
-socket.on('state:students',(s)=>{students=s;renderStudents();renderMonitor();if(modalSlug)updateModal(modalSlug);});
+socket.on('state:students',(s)=>{
+  const prev=students;
+  students=s;
+  // Only full rebuild if the set of students changed (add/remove)
+  const prevSlugs=prev.map(x=>x.slug).join(',');
+  const newSlugs=s.map(x=>x.slug).join(',');
+  if(prevSlugs!==newSlugs) renderStudents();
+  else updateStudentCards();
+  renderMonitor();
+  if(modalSlug) updateModal(modalSlug);
+});
 
 // ── TABS ──
 document.querySelectorAll('.tab').forEach(t=>{
@@ -280,27 +290,37 @@ function addStudent(){
   document.getElementById('newName').value='';
 }
 
+const qrCache={}; // slug → dataUrl
+
+async function fetchQr(slug,url){
+  if(qrCache[slug]) return qrCache[slug];
+  const d=await fetch(`/api/qr?url=${encodeURIComponent(url)}`).then(r=>r.json());
+  if(d.qr) qrCache[slug]=d.qr;
+  return d.qr||'';
+}
+
+const STATUS_LBL={bereit:'Bereit',laeuft:'Läuft…',ziel:'Ziel erreicht! ★',rand:'Rand erreicht',hindernis:'Hindernis!'};
+
 async function renderStudents(){
   const list=document.getElementById('student-list');
   if(students.length===0){list.innerHTML='<div style="color:#475569;font-size:13px;padding:20px;">Noch keine Schüler angelegt.</div>';return;}
-  // build cards, fetch QR for new ones
   list.innerHTML='';
   for(const s of students){
     const url=`${location.origin}/schueler/${s.slug}`;
     const card=document.createElement('div');
-    card.className='student-card';
+    card.className='student-card'; card.dataset.slug=s.slug;
     const initials=s.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    const statusClass='s-'+s.status.replace(/\s/g,'-').toLowerCase();
-    const statusLabel={bereit:'Bereit',laeuft:'Läuft…',ziel:'Ziel erreicht! ★',rand:'Rand erreicht',hindernis:'Hindernis!'}[s.status]||s.status;
-    const progText=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]+(p.steps>1?' ×'+p.steps:'')).join(' → '):'Noch kein Programm';
+    const statusClass='s-'+(s.status||'bereit');
+    const statusLabel=STATUS_LBL[s.status]||s.status||'Bereit';
+    const progText=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]||(p.cmd==='loop_count'?`↺${p.count}×`:'↺bis')).join(' → '):'Noch kein Programm';
     card.innerHTML=`
       <div class="sc-header">
         <div class="sc-avatar">${initials}</div>
         <div class="sc-name">${s.name}</div>
         <span class="sc-del" data-slug="${s.slug}">×</span>
       </div>
-      <div class="sc-status ${statusClass}"><div class="status-dot"></div>${statusLabel}</div>
-      <div class="sc-qr"><img src="" data-url="${url}" width="160" height="160" style="border-radius:6px;" alt="QR"></div>
+      <div class="sc-status ${statusClass}"><div class="status-dot"></div><span class="sc-status-txt">${statusLabel}</span></div>
+      <div class="sc-qr"><img src="" width="160" height="160" style="border-radius:6px;" alt="QR"></div>
       <div class="sc-link" onclick="navigator.clipboard.writeText('${url}');this.textContent='Kopiert!';setTimeout(()=>this.textContent='${url}',1500)">${url}</div>
       <div class="sc-prog">${progText}</div>
       <div class="sc-actions">
@@ -308,14 +328,31 @@ async function renderStudents(){
         <button class="sc-btn" data-reset="${s.slug}">&#8635; Reset</button>
       </div>`;
     list.appendChild(card);
-    // load QR
-    const img=card.querySelector('img[data-url]');
-    fetch(`/api/qr?url=${encodeURIComponent(url)}`).then(r=>r.json()).then(d=>{if(d.qr)img.src=d.qr;});
+    // load QR from cache or fetch once
+    const img=card.querySelector('img');
+    fetchQr(s.slug,url).then(src=>{ if(src) img.src=src; });
   }
   list.querySelectorAll('.sc-del').forEach(b=>b.addEventListener('click',()=>socket.emit('lehrer:remove_student',{slug:b.dataset.slug})));
   list.querySelectorAll('[data-reset]').forEach(b=>b.addEventListener('click',()=>socket.emit('lehrer:reset_student',{slug:b.dataset.reset})));
 }
 
+// lightweight update: only touch status + prog text, leave QR/DOM intact
+function updateStudentCards(){
+  students.forEach(s=>{
+    const card=document.getElementById('student-list').querySelector(`.student-card[data-slug="${s.slug}"]`);
+    if(!card) return;
+    const statusLabel=STATUS_LBL[s.status]||s.status||'Bereit';
+    const statusEl=card.querySelector('.sc-status');
+    if(statusEl){
+      statusEl.className='sc-status s-'+(s.status||'bereit');
+      const txt=statusEl.querySelector('.sc-status-txt'); if(txt) txt.textContent=statusLabel;
+    }
+    const progEl=card.querySelector('.sc-prog');
+    if(progEl){
+      progEl.textContent=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]||(p.cmd==='loop_count'?`↺${p.count}×`:'↺bis')).join(' → '):'Noch kein Programm';
+    }
+  });
+}
 // ── MONITOR ──
 function renderMonitor(){
   const grid=document.getElementById('monitor-grid');
