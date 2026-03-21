@@ -10,13 +10,29 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-// ── STATE (in-memory) ──
+// ── DEMO SPIELPLAN ──
+// 6×6, einfacher Einstieg
+// Start unten links, Ziel oben rechts
+// Zwei Hindernisse erzwingen eine leichte Kurve
+//
+//   0 1 2 3 4 5
+// 0 . . . . . ★
+// 1 . . . X . .
+// 2 . . . . . .
+// 3 . . X . . .
+// 4 . . . . . .
+// 5 . ► . . . .
+//
 let board = {
-  gridN: 8, startX: 1, startY: 1, startDir: 1,
-  goalX: 6, goalY: 6,
-  obstacles: [{ x: 3, y: 2 }, { x: 4, y: 5 }, { x: 2, y: 5 }],
+  gridN: 6,
+  startX: 1, startY: 5, startDir: 0,   // nach oben
+  goalX:  5, goalY:  0,
+  obstacles: [
+    {x:3, y:1},
+    {x:2, y:3},
+  ],
   colorCells: [],
-  task: 'Fahre zum Stern!'
+  task: 'Fahre vom Start (►) zum Stern (★)!'
 };
 
 // students: { name, slug, prog[], carX, carY, carDir, status, goalReached, running }
@@ -28,22 +44,15 @@ function slugify(name) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function getHost(req) {
-  return req.headers.host || `localhost:${PORT}`;
-}
-
 // ── ROUTES ──
 app.get('/', (req, res) => res.redirect('/lehrer'));
-
 app.get('/lehrer', (req, res) => res.sendFile(path.join(__dirname, 'public', 'lehrer.html')));
-
 app.get('/schueler/:slug', (req, res) => {
   const s = Object.values(students).find(s => s.slug === req.params.slug);
   if (!s) return res.status(404).send('Schüler nicht gefunden.');
   res.sendFile(path.join(__dirname, 'public', 'schueler.html'));
 });
 
-// API: get QR as data URL
 app.get('/api/qr', async (req, res) => {
   const url = req.query.url;
   if (!url) return res.status(400).json({ error: 'missing url' });
@@ -58,7 +67,6 @@ app.get('/api/qr', async (req, res) => {
 // ── SOCKET.IO ──
 io.on('connection', (socket) => {
 
-  // ── LEHRER ──
   socket.on('lehrer:join', () => {
     socket.join('lehrer');
     socket.emit('state:board', board);
@@ -67,7 +75,7 @@ io.on('connection', (socket) => {
 
   socket.on('lehrer:update_board', (newBoard) => {
     board = { ...board, ...newBoard };
-    io.emit('state:board', board); // push to all students
+    io.emit('state:board', board);
     io.to('lehrer').emit('state:board', board);
   });
 
@@ -100,7 +108,6 @@ io.on('connection', (socket) => {
     io.to('lehrer').emit('state:students', Object.values(students));
   });
 
-  // ── SCHÜLER ──
   socket.on('schueler:join', ({ slug }) => {
     const s = students[slug];
     if (!s) { socket.emit('schueler:error', 'Nicht gefunden.'); return; }
