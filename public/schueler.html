@@ -30,12 +30,20 @@ header h1{font-size:15px;font-weight:600;color:#f1f5f9;}
 #pempty{font-size:12px;color:#aaa;text-align:center;margin-top:24px;line-height:1.7;}
 
 /* ── normal block ── */
-.pb{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;border:1px solid #e8e8e8;background:#f7f7f7;font-size:12px;font-weight:500;color:#1a1a1a;transition:all .15s;flex-wrap:wrap;}
+.pb{display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:8px;border:1px solid #e8e8e8;background:#f7f7f7;font-size:12px;font-weight:500;color:#1a1a1a;transition:border-color .15s,background .15s;flex-wrap:wrap;}
 .pb.active{border-color:#2563eb;background:#eff6ff;}
 .pb.pb-sensor{border-color:#a855f7;background:#faf5ff;}
 .pb.pb-sensor.active{border-color:#7c3aed;background:#ede9fe;}
+.pb.drag-over{border-top:2px solid #3b82f6;}
+.pb.drag-ghost{opacity:.35;}
 .pb .del{margin-left:auto;cursor:pointer;color:#bbb;font-size:15px;line-height:1;padding:0 2px;flex-shrink:0;}
 .pb .del:hover{color:#e24b4a;}
+/* drag handle */
+.drag-handle{cursor:grab;color:#cbd5e1;font-size:14px;flex-shrink:0;padding:0 2px;user-select:none;line-height:1;}
+.drag-handle:active{cursor:grabbing;}
+.loop-wrap.drag-over{border-top:3px solid #3b82f6;}
+.loop-wrap.drag-ghost,.until-wrap.drag-ghost{opacity:.35;}
+.until-wrap.drag-over{border-top:3px solid #3b82f6;}
 .ps{display:flex;align-items:center;gap:3px;}
 .ps button{width:19px;height:19px;border-radius:4px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;color:#333;display:flex;align-items:center;justify-content:center;}
 .ps button:hover{background:#f0f0f0;}
@@ -273,20 +281,24 @@ function resolve(path){
 function renderPbBlock(item, path){
   const el  = document.createElement('div');
   const ps  = JSON.stringify(path);
+  const topLevel = path.length === 1;
+  const handle = topLevel ? `<span class="drag-handle" title="Verschieben">⠿</span>` : '';
   if(item.cmd==='sensor'){
     el.className='pb pb-sensor';
+    if(topLevel){ el.draggable=true; el.dataset.dragIdx=path[0]; }
     const co=SENSOR_COLORS.map(c=>`<option value="${c}"${item.color===c?' selected':''}>${SENSOR_COLOR_LBL[c]}</option>`).join('');
     const ao=SENSOR_ACTIONS.map(a=>`<option value="${a}"${item.action===a?' selected':''}>${SENSOR_ACTION_LBL[a]}</option>`).join('');
     const eo=SENSOR_ACTIONS.map(a=>`<option value="${a}"${(item.elseAction||'stp')===a?' selected':''}>${SENSOR_ACTION_LBL[a]}</option>`).join('');
-    el.innerHTML=`<span class="dot" style="background:#a855f7;flex-shrink:0;align-self:flex-start;margin-top:3px;"></span>
+    el.innerHTML=`${handle}<span class="dot" style="background:#a855f7;flex-shrink:0;align-self:flex-start;margin-top:3px;"></span>
 <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
   <div class="sensor-row"><span class="sl">Wenn</span><select class="sensor-sel" data-path='${ps}' data-field="color">${co}</select><span class="sl">→</span><select class="sensor-sel" data-path='${ps}' data-field="action">${ao}</select></div>
   <div class="sensor-row"><span class="sl" style="color:#94a3b8;">Sonst</span><span class="sl" style="color:#94a3b8;">→</span><select class="sensor-sel" data-path='${ps}' data-field="elseAction" style="border-color:#cbd5e1;background:#f8fafc;color:#475569;">${eo}</select></div>
 </div><span class="del" data-path='${ps}' style="align-self:flex-start;margin-top:1px;">×</span>`;
   } else {
     el.className='pb';
+    if(topLevel){ el.draggable=true; el.dataset.dragIdx=path[0]; }
     const hs=item.cmd!=='stp'&&item.cmd!=='wait';
-    el.innerHTML=`<span class="dot" style="background:${CLR[item.cmd]};flex-shrink:0;"></span>
+    el.innerHTML=`${handle}<span class="dot" style="background:${CLR[item.cmd]};flex-shrink:0;"></span>
 <span style="flex:1;">${LBL[item.cmd]}</span>
 ${hs?`<div class="ps"><button class="step-btn" data-path='${ps}' data-d="-1">−</button><span>${item.steps||1}</span><button class="step-btn" data-path='${ps}' data-d="1">+</button></div>`:''}
 <span class="del" data-path='${ps}'>×</span>`;
@@ -310,8 +322,11 @@ function renderLoopBlock(item, path, allowNested=true){
   const wrap=document.createElement('div');
   wrap.className='loop-wrap'; wrap.dataset.path=JSON.stringify(path);
   const ps=JSON.stringify(path);
+  const topLevel = path.length === 1;
+  if(topLevel){ wrap.draggable=true; wrap.dataset.dragIdx=path[0]; }
+  const handle = topLevel ? `<span class="drag-handle" title="Verschieben">⠿</span>` : '';
   const hdr=document.createElement('div'); hdr.className='loop-header';
-  hdr.innerHTML=`<span class="lhd" style="background:#f59e0b;"></span>
+  hdr.innerHTML=`${handle}<span class="lhd" style="background:#f59e0b;"></span>
 <span>Wiederhole</span>
 <div class="loop-count"><button data-path='${ps}' data-lcount="-1">−</button><span>${item.count||3}×</span><button data-path='${ps}' data-lcount="1">+</button></div>
 <span style="font-size:10px;color:#b45309;">mal</span>
@@ -335,10 +350,13 @@ function renderUntilBlock(item, path, allowNested=true){
   const wrap=document.createElement('div');
   wrap.className='until-wrap'; wrap.dataset.path=JSON.stringify(path);
   const ps=JSON.stringify(path);
+  const topLevel = path.length === 1;
+  if(topLevel){ wrap.draggable=true; wrap.dataset.dragIdx=path[0]; }
+  const handle = topLevel ? `<span class="drag-handle" title="Verschieben">⠿</span>` : '';
 
   // header: "Mache"
   const hdr=document.createElement('div'); hdr.className='until-header';
-  hdr.innerHTML=`<span class="uhd"></span><span>Mache</span>
+  hdr.innerHTML=`${handle}<span class="uhd"></span><span>Mache</span>
 <span class="until-del" data-path='${ps}' data-ldel="1">×</span>`;
   wrap.appendChild(hdr);
 
@@ -443,7 +461,53 @@ document.getElementById('palette').addEventListener('click',e=>{
   document.getElementById('plist').scrollTop=99999;
 });
 
-// ── SYNC ──
+// ── DRAG & DROP REORDER (top-level only) ──
+let dragSrcIdx = null;
+
+function getDragTarget(e){
+  return e.target.closest('[data-drag-idx]');
+}
+
+document.getElementById('plist').addEventListener('dragstart', e => {
+  if(running) return;
+  const el = e.target.closest('[data-drag-idx]'); if(!el) return;
+  dragSrcIdx = parseInt(el.dataset.dragIdx);
+  e.dataTransfer.effectAllowed = 'move';
+  // delay ghost style so it doesn't affect the drag image
+  setTimeout(() => el.classList.add('drag-ghost'), 0);
+});
+
+document.getElementById('plist').addEventListener('dragend', e => {
+  document.querySelectorAll('.drag-ghost,.drag-over').forEach(el => {
+    el.classList.remove('drag-ghost','drag-over');
+  });
+  dragSrcIdx = null;
+});
+
+document.getElementById('plist').addEventListener('dragover', e => {
+  if(dragSrcIdx === null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const target = e.target.closest('[data-drag-idx]');
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  if(target && parseInt(target.dataset.dragIdx) !== dragSrcIdx) {
+    target.classList.add('drag-over');
+  }
+});
+
+document.getElementById('plist').addEventListener('drop', e => {
+  if(dragSrcIdx === null) return;
+  e.preventDefault();
+  const target = e.target.closest('[data-drag-idx]');
+  if(!target) return;
+  const destIdx = parseInt(target.dataset.dragIdx);
+  if(destIdx === dragSrcIdx) return;
+  // reorder prog array
+  const item = prog.splice(dragSrcIdx, 1)[0];
+  const insertAt = dragSrcIdx < destIdx ? destIdx - 1 : destIdx;
+  prog.splice(insertAt < 0 ? 0 : insertAt, 0, item);
+  renderProg(); syncProg();
+});
 function syncProg(){socket.emit('schueler:update_prog',{slug,prog});}
 function syncCar(status,goalReached){socket.emit('schueler:update_car',{slug,x:car.x,y:car.y,dir:car.dir,status,goalReached,running});}
 function setSt(m){document.getElementById('smsg').textContent=m;}
