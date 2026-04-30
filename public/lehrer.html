@@ -8,7 +8,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:system-ui,sans-serif;background:#0f172a;color:#f1f5f9;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-
 header{display:flex;align-items:center;gap:12px;padding:10px 20px;background:#1e293b;border-bottom:1px solid #334155;flex-shrink:0;}
 header h1{font-size:15px;font-weight:600;}
 .badge{font-size:11px;background:#7c3aed;color:#fff;padding:2px 9px;border-radius:999px;}
@@ -16,23 +15,20 @@ header h1{font-size:15px;font-weight:600;}
 .hbtn{padding:6px 14px;border-radius:7px;border:1px solid #475569;background:transparent;cursor:pointer;font-size:12px;font-weight:500;color:#cbd5e1;transition:all .15s;}
 .hbtn:hover{background:#334155;color:#f1f5f9;}
 .hbtn.primary{background:#2563eb;border-color:#2563eb;color:#fff;}
-.hbtn.primary:hover{background:#1d4ed8;}
 .hbtn.success{background:#16a34a;border-color:#16a34a;color:#fff;}
-
-/* TABS */
-#tabs{display:flex;gap:0;background:#1e293b;border-bottom:1px solid #334155;flex-shrink:0;}
+.mode-toggle{display:flex;border:1px solid #334155;border-radius:7px;overflow:hidden;}
+.mtbtn{padding:5px 14px;background:transparent;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;transition:all .15s;}
+.mtbtn.active{background:#2563eb;color:#fff;}
+#tabs{display:flex;background:#1e293b;border-bottom:1px solid #334155;flex-shrink:0;}
 .tab{padding:10px 20px;cursor:pointer;font-size:13px;font-weight:500;color:#64748b;border-bottom:2px solid transparent;transition:all .15s;}
 .tab:hover{color:#cbd5e1;}
 .tab.active{color:#f1f5f9;border-bottom-color:#3b82f6;}
-
-/* TAB PANELS */
 .panel{display:none;flex:1;overflow:hidden;}
 .panel.active{display:flex;}
-
-/* ═══ TAB 1: EDITOR ═══ */
+/* EDITOR */
 #tab-editor{gap:0;}
 #tools{width:200px;flex-shrink:0;background:#1e293b;border-right:1px solid #334155;display:flex;flex-direction:column;padding:12px 10px;gap:5px;overflow-y:auto;}
-.t-sec{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.07em;padding:6px 4px 2px;margin-top:2px;}
+.t-sec{font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.07em;padding:6px 4px 2px;margin-top:4px;}
 .tbtn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid #334155;background:#0f172a;cursor:pointer;font-size:12px;font-weight:500;color:#e2e8f0;transition:all .1s;}
 .tbtn:hover{background:#1e293b;border-color:#475569;}
 .tbtn.active{border-color:#3b82f6;background:#1e3a5f;color:#93c5fd;}
@@ -42,15 +38,22 @@ header h1{font-size:15px;font-weight:600;}
 .dirbtn{width:26px;height:26px;border-radius:5px;border:1px solid #334155;background:#0f172a;cursor:pointer;font-size:13px;color:#94a3b8;display:flex;align-items:center;justify-content:center;}
 .dirbtn:hover{background:#1e293b;}
 .dirbtn.active{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd;}
-
 #editor-field{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:12px;background:#0f172a;overflow:hidden;}
-.grid-row{display:flex;align-items:center;gap:10px;font-size:12px;color:#64748b;}
-.grid-row input{width:100px;}
-.grid-row span{min-width:38px;color:#94a3b8;}
-#taskInput{background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f1f5f9;font-size:12px;padding:5px 10px;width:280px;}
+.grid-row{display:flex;align-items:center;gap:10px;font-size:12px;color:#64748b;flex-wrap:wrap;}
+.grid-row input[type=range]{width:100px;}
+#taskInput{background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f1f5f9;font-size:12px;padding:5px 10px;width:240px;}
 canvas#editcv{display:block;border-radius:6px;cursor:crosshair;}
-
-/* ═══ TAB 2: SCHÜLER ═══ */
+/* MUSTER */
+#tab-muster{gap:0;}
+#muster-tools{width:200px;flex-shrink:0;background:#1e293b;border-right:1px solid #334155;display:flex;flex-direction:column;padding:12px 10px;gap:5px;overflow-y:auto;}
+.ptbtn{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;border:2px solid #334155;background:#0f172a;cursor:pointer;font-size:12px;font-weight:600;color:#e2e8f0;transition:all .1s;}
+.ptbtn:hover{background:#1e293b;}
+.ptbtn.active{border-color:#3b82f6;background:#1e3a5f;}
+.pswatch{width:22px;height:22px;border-radius:5px;flex-shrink:0;}
+#muster-field{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:10px;background:#0f172a;overflow:hidden;}
+canvas#mustercv{display:block;border-radius:6px;cursor:crosshair;}
+.mhint{font-size:11px;color:#475569;}
+/* SCHÜLER */
 #tab-schueler{flex-direction:column;}
 #schueler-top{padding:14px 20px;display:flex;gap:10px;align-items:center;border-bottom:1px solid #1e293b;flex-shrink:0;}
 #schueler-top input{background:#1e293b;border:1px solid #334155;border-radius:7px;color:#f1f5f9;font-size:13px;padding:6px 12px;width:200px;}
@@ -60,46 +63,44 @@ canvas#editcv{display:block;border-radius:6px;cursor:crosshair;}
 .sc-header{display:flex;align-items:center;gap:8px;}
 .sc-avatar{width:36px;height:36px;border-radius:50%;background:#1e3a5f;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#93c5fd;flex-shrink:0;}
 .sc-name{font-size:14px;font-weight:600;color:#f1f5f9;flex:1;}
-.sc-del{cursor:pointer;color:#475569;font-size:18px;line-height:1;}
+.sc-del{cursor:pointer;color:#475569;font-size:18px;}
 .sc-del:hover{color:#ef4444;}
 .sc-status{display:flex;align-items:center;gap:6px;font-size:12px;}
 .status-dot{width:8px;height:8px;border-radius:50%;}
 .s-bereit .status-dot{background:#22c55e;}
 .s-laeuft .status-dot{background:#3b82f6;animation:pulse .8s infinite alternate;}
 .s-ziel   .status-dot{background:#f59e0b;}
-.s-rand   .status-dot, .s-hindernis .status-dot{background:#ef4444;}
+.s-rand   .status-dot,.s-hindernis .status-dot{background:#ef4444;}
 @keyframes pulse{from{opacity:.4}to{opacity:1}}
 .sc-link{font-size:11px;color:#3b82f6;word-break:break-all;cursor:pointer;}
-.sc-link:hover{text-decoration:underline;}
 .sc-qr{width:100%;display:flex;justify-content:center;}
 .sc-qr img{border-radius:6px;border:2px solid #334155;}
 .sc-actions{display:flex;gap:6px;}
 .sc-btn{flex:1;padding:5px 0;border-radius:6px;border:1px solid #334155;background:#0f172a;cursor:pointer;font-size:11px;font-weight:500;color:#94a3b8;}
 .sc-btn:hover{background:#1e293b;color:#f1f5f9;}
-.sc-prog{font-size:11px;color:#64748b;min-height:16px;}
-
-/* ═══ TAB 3: MONITOR ═══ */
+/* MONITOR */
 #tab-monitor{flex-direction:column;overflow:hidden;}
 #monitor-grid{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;}
-.monitor-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;width:220px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .15s;}
+.monitor-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:12px;width:240px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .15s;}
 .monitor-card:hover{border-color:#3b82f6;}
-.monitor-card.goal{border-color:#f59e0b;}
 .mc-header{display:flex;align-items:center;gap:8px;}
 .mc-name{font-size:13px;font-weight:600;color:#f1f5f9;flex:1;}
 .mc-status{font-size:11px;}
-.mc-field{width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;}
-canvas.mcv{display:block;width:100%;height:100%;}
-.mc-prog{font-size:10px;color:#64748b;line-height:1.5;}
-
-/* modal overlay */
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100;}
+.mc-canvases{display:flex;gap:6px;}
+.mc-cv-wrap{flex:1;display:flex;flex-direction:column;gap:2px;}
+.mc-cv-lbl{font-size:9px;color:#475569;text-align:center;}
+canvas.mcv{display:block;width:100%;border-radius:4px;}
+/* MODAL */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:100;}
 #modal.open{display:flex;}
-#modal-inner{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;width:500px;max-height:80vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+#modal-inner{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;width:580px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
 #modal-title{font-size:15px;font-weight:600;color:#f1f5f9;display:flex;align-items:center;gap:8px;}
-#modal-close{margin-left:auto;cursor:pointer;color:#64748b;font-size:20px;line-height:1;}
+#modal-close{margin-left:auto;cursor:pointer;color:#64748b;font-size:22px;}
 #modal-close:hover{color:#f1f5f9;}
-#modal-field{width:100%;border-radius:6px;overflow:hidden;}
-canvas#modal-cv{display:block;width:100%;}
+.modal-canvases{display:flex;gap:10px;}
+.modal-cv-wrap{flex:1;display:flex;flex-direction:column;gap:4px;}
+.modal-cv-lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;}
+canvas.modal-cv{display:block;width:100%;border-radius:6px;}
 #modal-prog{font-size:12px;color:#94a3b8;line-height:1.7;}
 </style>
 </head>
@@ -109,146 +110,176 @@ canvas#modal-cv{display:block;width:100%;}
   <span class="badge">LEHRER</span>
   <h1>Fahrzeug-Programmierer</h1>
   <div class="hsep"></div>
-  <button class="hbtn success" id="btnPush">&#10003; Spielfeld freigeben</button>
+  <div class="mode-toggle">
+    <button class="mtbtn active" id="btnModeDrive">🚗 Fahren</button>
+    <button class="mtbtn" id="btnModePaint">🎨 Malen</button>
+  </div>
+  <button class="hbtn success" id="btnPush" style="margin-left:8px;">✓ Freigeben</button>
 </header>
 
 <div id="tabs">
-  <div class="tab active" data-tab="editor">&#x270F; Spielfeld-Editor</div>
-  <div class="tab" data-tab="schueler">&#x1F9D1;&#x200D;&#x1F393; Schüler-Verwaltung</div>
-  <div class="tab" data-tab="monitor">&#x1F4CA; Live-Monitor</div>
+  <div class="tab active" data-tab="editor">✏️ Spielfeld-Editor</div>
+  <div class="tab" data-tab="muster">🎨 Muster-Vorlage</div>
+  <div class="tab" data-tab="schueler">🧑‍🎓 Schüler</div>
+  <div class="tab" data-tab="monitor">📊 Monitor</div>
 </div>
 
-<!-- TAB: EDITOR -->
+<!-- EDITOR -->
 <div class="panel active" id="tab-editor">
   <div id="tools">
     <div class="t-sec">Elemente</div>
-    <div class="tbtn active" data-tool="obstacle"><div class="ticon" style="background:#450a0a;">&#10005;</div>Hindernis</div>
-    <div class="tbtn" data-tool="start"><div class="ticon" style="background:#1e3a5f;">&#9654;</div>Start</div>
+    <div class="tbtn active" data-tool="obstacle"><div class="ticon" style="background:#450a0a;">✕</div>Hindernis</div>
+    <div class="tbtn" data-tool="start"><div class="ticon" style="background:#1e3a5f;">▶</div>Start</div>
     <div id="dir-row">
       <span class="dlbl">Richtung:</span>
-      <button class="dirbtn active" data-dir="0">&#x2191;</button>
-      <button class="dirbtn" data-dir="1">&#x2192;</button>
-      <button class="dirbtn" data-dir="2">&#x2193;</button>
-      <button class="dirbtn" data-dir="3">&#x2190;</button>
+      <button class="dirbtn active" data-dir="0">↑</button>
+      <button class="dirbtn" data-dir="1">→</button>
+      <button class="dirbtn" data-dir="2">↓</button>
+      <button class="dirbtn" data-dir="3">←</button>
     </div>
-    <div class="tbtn" data-tool="goal"><div class="ticon" style="background:#14532d;">&#9733;</div>Ziel</div>
+    <div class="tbtn" data-tool="goal"><div class="ticon" style="background:#14532d;">★</div>Ziel</div>
     <div class="t-sec">Farbfelder</div>
-    <div class="tbtn" data-tool="red"><div class="ticon" style="background:#991b1b;border-radius:4px;"></div>Rot</div>
-    <div class="tbtn" data-tool="blue"><div class="ticon" style="background:#1e3a8a;border-radius:4px;"></div>Blau</div>
-    <div class="tbtn" data-tool="green"><div class="ticon" style="background:#14532d;border-radius:4px;"></div>Grün</div>
+    <div class="tbtn" data-tool="red"   ><div class="ticon" style="background:#991b1b;border-radius:4px;"></div>Rot</div>
+    <div class="tbtn" data-tool="blue"  ><div class="ticon" style="background:#1e3a8a;border-radius:4px;"></div>Blau</div>
+    <div class="tbtn" data-tool="green" ><div class="ticon" style="background:#14532d;border-radius:4px;"></div>Grün</div>
     <div class="tbtn" data-tool="yellow"><div class="ticon" style="background:#713f12;border-radius:4px;"></div>Gelb</div>
     <div class="t-sec">Werkzeug</div>
-    <div class="tbtn" data-tool="erase" style="color:#fca5a5;border-color:#7f1d1d;"><div class="ticon" style="background:#2a1010;">&#x232b;</div>Löschen</div>
+    <div class="tbtn" data-tool="erase" style="color:#fca5a5;border-color:#7f1d1d;"><div class="ticon" style="background:#2a1010;">⌫</div>Löschen</div>
   </div>
   <div id="editor-field">
     <div class="grid-row">
       <span>Feldgröße:</span>
-      <input type="range" id="gsz" min="4" max="16" value="8" step="1">
-      <span id="gval">8×8</span>
-      <span style="margin-left:12px;">Aufgabe:</span>
+      <input type="range" id="gsz" min="4" max="16" value="6" step="1">
+      <span id="gval">6×6</span>
+      <span>Aufgabe:</span>
       <input type="text" id="taskInput" placeholder="Fahre zum Stern!">
     </div>
     <canvas id="editcv"></canvas>
-    <div style="font-size:11px;color:#475569;">Linksklick = platzieren &nbsp;|&nbsp; Rechtsklick = löschen &nbsp;|&nbsp; Gedrückt halten = malen</div>
+    <div style="font-size:11px;color:#475569;">Linksklick = platzieren &nbsp;|&nbsp; Rechtsklick = löschen &nbsp;|&nbsp; Halten = malen</div>
   </div>
 </div>
 
-<!-- TAB: SCHÜLER -->
+<!-- MUSTER VORLAGE -->
+<div class="panel" id="tab-muster">
+  <div id="muster-tools">
+    <div class="t-sec">Farbe</div>
+    <div class="ptbtn active" data-pc="red"   ><div class="pswatch" style="background:#ef4444;"></div>Rot</div>
+    <div class="ptbtn" data-pc="blue"  ><div class="pswatch" style="background:#3b82f6;"></div>Blau</div>
+    <div class="ptbtn" data-pc="green" ><div class="pswatch" style="background:#22c55e;"></div>Grün</div>
+    <div class="ptbtn" data-pc="yellow"><div class="pswatch" style="background:#ca8a04;"></div>Gelb</div>
+    <div class="ptbtn" data-pc="erase" style="border-color:#7f1d1d;color:#fca5a5;margin-top:4px;"><div class="pswatch" style="background:#2a1010;display:flex;align-items:center;justify-content:center;font-size:13px;">⌫</div>Löschen</div>
+    <div class="t-sec" style="margin-top:8px;">Info</div>
+    <div style="font-size:11px;color:#475569;line-height:1.5;padding:2px;">Im Malen-Modus sehen Schüler die Vorlage als halbtransparentes Overlay.</div>
+    <button class="hbtn" id="btnClearPattern" style="margin-top:10px;width:100%;">Vorlage leeren</button>
+  </div>
+  <div id="muster-field">
+    <canvas id="mustercv"></canvas>
+    <div class="mhint">Linksklick = einfärben &nbsp;|&nbsp; Rechtsklick = löschen</div>
+  </div>
+</div>
+
+<!-- SCHÜLER -->
 <div class="panel" id="tab-schueler">
   <div id="schueler-top">
     <input type="text" id="newName" placeholder="Name eingeben …" maxlength="30">
     <button class="hbtn primary" id="btnAdd">+ Schüler anlegen</button>
   </div>
-  <div id="student-list">
-    <div style="color:#475569;font-size:13px;padding:20px;">Noch keine Schüler angelegt.</div>
-  </div>
+  <div id="student-list"><div style="color:#475569;font-size:13px;padding:20px;">Noch keine Schüler angelegt.</div></div>
 </div>
 
-<!-- TAB: MONITOR -->
+<!-- MONITOR -->
 <div class="panel" id="tab-monitor">
-  <div id="monitor-grid">
-    <div style="color:#475569;font-size:13px;padding:20px;">Keine Schüler verbunden.</div>
-  </div>
+  <div id="monitor-grid"><div style="color:#475569;font-size:13px;padding:20px;">Keine Schüler angelegt.</div></div>
 </div>
 
-<!-- MODAL: Schüler-Detailansicht -->
+<!-- MODAL -->
 <div id="modal">
   <div id="modal-inner">
     <div id="modal-title">
-      <span id="modal-name">Schüler</span>
-      <span id="modal-status-txt" style="font-size:12px;color:#64748b;"></span>
+      <span id="modal-name"></span>
+      <span id="modal-status-txt" style="font-size:12px;color:#64748b;font-weight:400;"></span>
       <span id="modal-close">×</span>
     </div>
-    <div id="modal-field"><canvas id="modal-cv"></canvas></div>
-    <div><div style="font-size:11px;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Programm</div><div id="modal-prog">–</div></div>
+    <div class="modal-canvases">
+      <div class="modal-cv-wrap">
+        <div class="modal-cv-lbl">Fahrzeug</div>
+        <canvas class="modal-cv" id="modal-cv"></canvas>
+      </div>
+      <div class="modal-cv-wrap" id="modal-painted-wrap" style="display:none;">
+        <div class="modal-cv-lbl">Gemalt</div>
+        <canvas class="modal-cv" id="modal-painted-cv"></canvas>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Programm</div>
+      <div id="modal-prog"></div>
+    </div>
   </div>
 </div>
 
 <script>
-const ROT=[-Math.PI/2,0,Math.PI/2,Math.PI];
-const FCFG={red:{fill:'#fca5a580',stroke:'#ef4444',label:'ROT'},blue:{fill:'#93c5fd80',stroke:'#3b82f6',label:'BLAU'},green:{fill:'#86efac80',stroke:'#22c55e',label:'GRÜN'},yellow:{fill:'#fde04780',stroke:'#ca8a04',label:'GELB'}};
-const CLR={fwd:'#378ADD',bwd:'#D85A30',left:'#1D9E75',rght:'#BA7517',stp:'#E24B4A',wait:'#888780'};
-const LBL={fwd:'Vorwärts',bwd:'Rückwärts',left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',wait:'Warten'};
+const ROT  = [-Math.PI/2,0,Math.PI/2,Math.PI];
+const FCFG = {red:{fill:'#fca5a580',stroke:'#ef4444',label:'ROT'},blue:{fill:'#93c5fd80',stroke:'#3b82f6',label:'BLAU'},green:{fill:'#86efac80',stroke:'#22c55e',label:'GRÜN'},yellow:{fill:'#fde04780',stroke:'#ca8a04',label:'GELB'}};
+const CLR  = {fwd:'#378ADD',bwd:'#D85A30',left:'#1D9E75',rght:'#BA7517',stp:'#E24B4A',wait:'#888780',sensor:'#a855f7'};
+const LBL  = {fwd:'Vorwärts',bwd:'Rückwärts',left:'Links drehen',rght:'Rechts drehen',stp:'Stopp',wait:'Warten'};
+const PAINT_CLR = {red:'#ef4444',blue:'#3b82f6',green:'#22c55e',yellow:'#ca8a04'};
+const PAINT_LBL = {red:'Male Rot',blue:'Male Blau',green:'Male Grün',yellow:'Male Gelb'};
 
-const socket=io();
-let board={gridN:8,startX:1,startY:1,startDir:1,goalX:6,goalY:6,obstacles:[{x:3,y:2},{x:4,y:5},{x:2,y:5}],colorCells:[],task:'Fahre zum Stern!'};
-let students=[];
-let activeTool='obstacle',startDir=1;
-let modalSlug=null;
+const socket = io();
+let board = {gridN:6,startX:1,startY:5,startDir:0,goalX:5,goalY:0,obstacles:[{x:3,y:1},{x:2,y:3}],colorCells:[],task:'Fahre zum Stern!',mode:'drive',pattern:[]};
+let students=[], activeTool='obstacle', startDir=0, activePc='red', modalSlug=null;
+let boardMode='drive';
 
-// ── SOCKET ──
 socket.emit('lehrer:join');
-socket.on('state:board',(b)=>{board=b;drawEditor();});
-socket.on('state:students',(s)=>{
-  const prev=students;
-  students=s;
-  // Only full rebuild if the set of students changed (add/remove)
-  const prevSlugs=prev.map(x=>x.slug).join(',');
-  const newSlugs=s.map(x=>x.slug).join(',');
-  if(prevSlugs!==newSlugs) renderStudents();
-  else updateStudentCards();
+socket.on('state:board',b=>{board=b;boardMode=b.mode||'drive';syncModeUI();drawEditor();drawMuster();});
+socket.on('state:students',s=>{
+  const prev=students; students=s;
+  const ps=prev.map(x=>x.slug).join(','), ns=s.map(x=>x.slug).join(',');
+  if(ps!==ns) renderStudents(); else updateStudentCards();
   renderMonitor();
   if(modalSlug) updateModal(modalSlug);
 });
 
+// ── MODE ──
+function syncModeUI(){
+  document.getElementById('btnModeDrive').classList.toggle('active',boardMode==='drive');
+  document.getElementById('btnModePaint').classList.toggle('active',boardMode==='paint');
+}
+document.getElementById('btnModeDrive').addEventListener('click',()=>{boardMode='drive';board.mode='drive';syncModeUI();});
+document.getElementById('btnModePaint').addEventListener('click',()=>{boardMode='paint';board.mode='paint';syncModeUI();});
+
 // ── TABS ──
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+    document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active'); document.getElementById('tab-'+t.dataset.tab).classList.add('active');
     if(t.dataset.tab==='editor') setTimeout(drawEditor,50);
+    if(t.dataset.tab==='muster') setTimeout(drawMuster,50);
     if(t.dataset.tab==='monitor') setTimeout(renderMonitor,50);
   });
 });
 
-// ── EDITOR ──
-const editcv=document.getElementById('editcv'),ectx=editcv.getContext('2d');
-
-function ecs(){const w=document.getElementById('editor-field');return Math.floor(Math.min(w.clientWidth-60,w.clientHeight-80,500)/board.gridN);}
-
-function drawField(canvas,ctx,b,car,S){
+// ── DRAW FIELD ──
+function drawField(canvas,ctx2,b,car,S,painted){
   if(!S) S=Math.floor(Math.min(canvas.parentElement.clientWidth-4,canvas.parentElement.clientHeight-4,500)/b.gridN);
   canvas.width=S*b.gridN; canvas.height=S*b.gridN;
-  ctx.fillStyle='#111827'; ctx.fillRect(0,0,canvas.width,canvas.height);
-  for(let r=0;r<b.gridN;r++) for(let c=0;c<b.gridN;c++){ctx.strokeStyle='#1e293b';ctx.lineWidth=1;ctx.strokeRect(c*S,r*S,S,S);}
-  b.colorCells.forEach(cc=>{const f=FCFG[cc.color];if(!f)return;ctx.fillStyle=f.fill;ctx.fillRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.strokeStyle=f.stroke;ctx.lineWidth=1.5;ctx.strokeRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx.fillStyle=f.stroke;ctx.font=`bold ${Math.floor(S*.27)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.label,cc.x*S+S/2,cc.y*S+S/2);});
-  ctx.fillStyle='#14532d55';ctx.fillRect(b.goalX*S+1,b.goalY*S+1,S-2,S-2);ctx.strokeStyle='#22c55e';ctx.lineWidth=2;ctx.strokeRect(b.goalX*S+1,b.goalY*S+1,S-2,S-2);ctx.fillStyle='#22c55e';ctx.font=`${Math.floor(S*.5)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('★',b.goalX*S+S/2,b.goalY*S+S/2);
-  b.obstacles.forEach(o=>{ctx.fillStyle='#450a0a';ctx.fillRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.strokeStyle='#ef4444';ctx.lineWidth=1.5;ctx.strokeRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx.fillStyle='#fca5a5';ctx.font=`${Math.floor(S*.42)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✕',o.x*S+S/2,o.y*S+S/2);});
-  // start
-  ctx.fillStyle='rgba(59,130,246,0.15)';ctx.fillRect(b.startX*S+1,b.startY*S+1,S-2,S-2);ctx.strokeStyle='#3b82f6';ctx.lineWidth=2;ctx.strokeRect(b.startX*S+1,b.startY*S+1,S-2,S-2);
-  drawArrow(ctx,b.startX,b.startY,b.startDir,S,'#3b82f6','#93c5fd');
-  // car
-  if(car) drawArrow(ctx,car.x,car.y,car.dir,S,'#185FA5','#E6F1FB');
+  ctx2.fillStyle='#111827'; ctx2.fillRect(0,0,canvas.width,canvas.height);
+  for(let r=0;r<b.gridN;r++) for(let c=0;c<b.gridN;c++){ctx2.strokeStyle='#1e293b';ctx2.lineWidth=1;ctx2.strokeRect(c*S,r*S,S,S);}
+  if(painted&&painted.length) painted.forEach(p=>{const col=PAINT_CLR[p.color];if(!col)return;ctx2.fillStyle=col+'bb';ctx2.fillRect(p.x*S+1,p.y*S+1,S-2,S-2);});
+  b.colorCells.forEach(cc=>{const f=FCFG[cc.color];if(!f)return;ctx2.fillStyle=f.fill;ctx2.fillRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx2.strokeStyle=f.stroke;ctx2.lineWidth=1.5;ctx2.strokeRect(cc.x*S+1,cc.y*S+1,S-2,S-2);ctx2.fillStyle=f.stroke;ctx2.font=`bold ${Math.floor(S*.27)}px sans-serif`;ctx2.textAlign='center';ctx2.textBaseline='middle';ctx2.fillText(f.label,cc.x*S+S/2,cc.y*S+S/2);});
+  ctx2.fillStyle='#14532d55';ctx2.fillRect(b.goalX*S+1,b.goalY*S+1,S-2,S-2);ctx2.strokeStyle='#22c55e';ctx2.lineWidth=2;ctx2.strokeRect(b.goalX*S+1,b.goalY*S+1,S-2,S-2);ctx2.fillStyle='#22c55e';ctx2.font=`${Math.floor(S*.5)}px sans-serif`;ctx2.textAlign='center';ctx2.textBaseline='middle';ctx2.fillText('★',b.goalX*S+S/2,b.goalY*S+S/2);
+  b.obstacles.forEach(o=>{ctx2.fillStyle='#450a0a';ctx2.fillRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx2.strokeStyle='#ef4444';ctx2.lineWidth=1.5;ctx2.strokeRect(o.x*S+2,o.y*S+2,S-4,S-4);ctx2.fillStyle='#fca5a5';ctx2.font=`${Math.floor(S*.42)}px sans-serif`;ctx2.textAlign='center';ctx2.textBaseline='middle';ctx2.fillText('✕',o.x*S+S/2,o.y*S+S/2);});
+  ctx2.fillStyle='rgba(59,130,246,0.15)';ctx2.fillRect(b.startX*S+1,b.startY*S+1,S-2,S-2);ctx2.strokeStyle='#3b82f6';ctx2.lineWidth=2;ctx2.strokeRect(b.startX*S+1,b.startY*S+1,S-2,S-2);
+  arrowDraw(ctx2,b.startX,b.startY,b.startDir,S,'#3b82f6','#93c5fd');
+  if(car) arrowDraw(ctx2,car.x,car.y,car.dir,S,'#185FA5','#E6F1FB');
 }
+function arrowDraw(ctx2,gx,gy,dir,S,f,s){const cx=gx*S+S/2,cy=gy*S+S/2,R=S*.34;ctx2.save();ctx2.translate(cx,cy);ctx2.rotate(ROT[dir]);ctx2.beginPath();ctx2.moveTo(R,0);ctx2.lineTo(-R*.7,R*.65);ctx2.lineTo(-R*.7,-R*.65);ctx2.closePath();ctx2.fillStyle=f;ctx2.fill();ctx2.strokeStyle=s;ctx2.lineWidth=1.5;ctx2.stroke();ctx2.restore();}
 
-function drawArrow(ctx,gx,gy,dir,S,fill,stroke){const cx=gx*S+S/2,cy=gy*S+S/2,R=S*.34;ctx.save();ctx.translate(cx,cy);ctx.rotate(ROT[dir]);ctx.beginPath();ctx.moveTo(R,0);ctx.lineTo(-R*.7,R*.65);ctx.lineTo(-R*.7,-R*.65);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();ctx.restore();}
-
+// ── EDITOR ──
+const editcv=document.getElementById('editcv'),ectx=editcv.getContext('2d');
+function ecs(){const w=document.getElementById('editor-field');return Math.floor(Math.min(w.clientWidth-60,w.clientHeight-80,500)/board.gridN);}
 function drawEditor(){drawField(editcv,ectx,board,null,ecs());}
-
-function cellAt(cv,e){const S=ecs(),r=cv.getBoundingClientRect();return{x:Math.floor((e.clientX-r.left)/S),y:Math.floor((e.clientY-r.top)/S)};}
-
+function cellAt(cv2,e,S){const r=cv2.getBoundingClientRect();return{x:Math.floor((e.clientX-r.left)/S),y:Math.floor((e.clientY-r.top)/S)};}
 function applyTool(x,y,right){
   if(x<0||y<0||x>=board.gridN||y>=board.gridN)return;
   const t=right?'erase':activeTool;
@@ -259,155 +290,132 @@ function applyTool(x,y,right){
   else if(['red','blue','green','yellow'].includes(t)){board.obstacles=board.obstacles.filter(o=>!(o.x===x&&o.y===y));board.colorCells=board.colorCells.filter(c=>!(c.x===x&&c.y===y));board.colorCells.push({x,y,color:t});}
   drawEditor();
 }
-
-let painting=false;
-editcv.addEventListener('mousedown',e=>{painting=true;const c=cellAt(editcv,e);applyTool(c.x,c.y,e.button===2);});
-editcv.addEventListener('mousemove',e=>{if(painting&&e.buttons>0){const c=cellAt(editcv,e);applyTool(c.x,c.y,e.button===2);}});
-window.addEventListener('mouseup',()=>painting=false);
-editcv.addEventListener('contextmenu',e=>{e.preventDefault();const c=cellAt(editcv,e);applyTool(c.x,c.y,true);});
-
+let painting=false, mpainting=false;
+editcv.addEventListener('mousedown',e=>{painting=true;const c=cellAt(editcv,e,ecs());applyTool(c.x,c.y,e.button===2);});
+editcv.addEventListener('mousemove',e=>{if(painting&&e.buttons>0){const c=cellAt(editcv,e,ecs());applyTool(c.x,c.y,e.button===2);}});
+editcv.addEventListener('contextmenu',e=>{e.preventDefault();const c=cellAt(editcv,e,ecs());applyTool(c.x,c.y,true);});
+window.addEventListener('mouseup',()=>{painting=false;mpainting=false;});
 document.querySelectorAll('.tbtn').forEach(b=>b.addEventListener('click',()=>{activeTool=b.dataset.tool;document.querySelectorAll('.tbtn').forEach(x=>x.classList.toggle('active',x.dataset.tool===activeTool));}));
 document.querySelectorAll('.dirbtn').forEach(b=>b.addEventListener('click',()=>{startDir=parseInt(b.dataset.dir);board.startDir=startDir;document.querySelectorAll('.dirbtn').forEach(x=>x.classList.toggle('active',parseInt(x.dataset.dir)===startDir));drawEditor();}));
-document.getElementById('gsz').addEventListener('input',function(){board.gridN=parseInt(this.value);document.getElementById('gval').textContent=board.gridN+'×'+board.gridN;board.startX=Math.min(board.startX,board.gridN-1);board.startY=Math.min(board.startY,board.gridN-1);board.goalX=Math.min(board.goalX,board.gridN-1);board.goalY=Math.min(board.goalY,board.gridN-1);board.obstacles=board.obstacles.filter(o=>o.x<board.gridN&&o.y<board.gridN);board.colorCells=board.colorCells.filter(c=>c.x<board.gridN&&c.y<board.gridN);drawEditor();});
+document.getElementById('gsz').addEventListener('input',function(){
+  board.gridN=parseInt(this.value);document.getElementById('gval').textContent=board.gridN+'×'+board.gridN;
+  board.startX=Math.min(board.startX,board.gridN-1);board.startY=Math.min(board.startY,board.gridN-1);
+  board.goalX=Math.min(board.goalX,board.gridN-1);board.goalY=Math.min(board.goalY,board.gridN-1);
+  board.obstacles=board.obstacles.filter(o=>o.x<board.gridN&&o.y<board.gridN);
+  board.colorCells=board.colorCells.filter(c=>c.x<board.gridN&&c.y<board.gridN);
+  board.pattern=(board.pattern||[]).filter(p=>p.x<board.gridN&&p.y<board.gridN);
+  drawEditor();
+});
 document.getElementById('taskInput').addEventListener('input',function(){board.task=this.value;});
 document.getElementById('taskInput').value=board.task;
-
 document.getElementById('btnPush').addEventListener('click',()=>{
   board.task=document.getElementById('taskInput').value||'Fahre zum Stern!';
+  board.mode=boardMode;
   socket.emit('lehrer:update_board',board);
-  document.getElementById('btnPush').textContent='✓ Freigegeben!';
-  setTimeout(()=>document.getElementById('btnPush').textContent='✓ Spielfeld freigeben',2000);
+  const btn=document.getElementById('btnPush');btn.textContent='✓ Freigegeben!';setTimeout(()=>btn.textContent='✓ Freigeben',2000);
 });
 
-// ── SCHÜLER VERWALTUNG ──
+// ── MUSTER ──
+const mustercv=document.getElementById('mustercv'),mctx2=mustercv.getContext('2d');
+function mcs(){const w=document.getElementById('muster-field');return Math.floor(Math.min(w.clientWidth-60,w.clientHeight-60,500)/board.gridN);}
+function drawMuster(){
+  const S=mcs(),N=board.gridN;
+  mustercv.width=S*N;mustercv.height=S*N;
+  mctx2.fillStyle='#111827';mctx2.fillRect(0,0,mustercv.width,mustercv.height);
+  for(let r=0;r<N;r++) for(let c=0;c<N;c++){mctx2.strokeStyle='#1e293b';mctx2.lineWidth=1;mctx2.strokeRect(c*S,r*S,S,S);}
+  (board.pattern||[]).forEach(p=>{const col=PAINT_CLR[p.color];if(!col)return;mctx2.fillStyle=col;mctx2.fillRect(p.x*S+2,p.y*S+2,S-4,S-4);});
+  // faint reference
+  board.obstacles.forEach(o=>{mctx2.fillStyle='#450a0a44';mctx2.fillRect(o.x*S+2,o.y*S+2,S-4,S-4);});
+  mctx2.fillStyle='#22c55e55';mctx2.font=`${Math.floor(S*.5)}px sans-serif`;mctx2.textAlign='center';mctx2.textBaseline='middle';mctx2.fillText('★',board.goalX*S+S/2,board.goalY*S+S/2);
+}
+function applyPattern(x,y,right){
+  if(x<0||y<0||x>=board.gridN||y>=board.gridN)return;
+  board.pattern=(board.pattern||[]).filter(p=>!(p.x===x&&p.y===y));
+  if(!right&&activePc!=='erase') board.pattern.push({x,y,color:activePc});
+  drawMuster();
+}
+mustercv.addEventListener('mousedown',e=>{mpainting=true;const c=cellAt(mustercv,e,mcs());applyPattern(c.x,c.y,e.button===2);});
+mustercv.addEventListener('mousemove',e=>{if(mpainting&&e.buttons>0){const c=cellAt(mustercv,e,mcs());applyPattern(c.x,c.y,e.button===2);}});
+mustercv.addEventListener('contextmenu',e=>{e.preventDefault();const c=cellAt(mustercv,e,mcs());applyPattern(c.x,c.y,true);});
+document.querySelectorAll('.ptbtn').forEach(b=>b.addEventListener('click',()=>{activePc=b.dataset.pc;document.querySelectorAll('.ptbtn').forEach(x=>x.classList.toggle('active',x.dataset.pc===activePc));}));
+document.getElementById('btnClearPattern').addEventListener('click',()=>{board.pattern=[];drawMuster();});
+
+// ── SCHÜLER ──
 document.getElementById('btnAdd').addEventListener('click',addStudent);
 document.getElementById('newName').addEventListener('keydown',e=>{if(e.key==='Enter')addStudent();});
-
-function addStudent(){
-  const name=document.getElementById('newName').value.trim();
-  if(!name)return;
-  socket.emit('lehrer:add_student',{name});
-  document.getElementById('newName').value='';
-}
-
-const qrCache={}; // slug → dataUrl
-
-async function fetchQr(slug,url){
-  if(qrCache[slug]) return qrCache[slug];
-  const d=await fetch(`/api/qr?url=${encodeURIComponent(url)}`).then(r=>r.json());
-  if(d.qr) qrCache[slug]=d.qr;
-  return d.qr||'';
-}
-
+function addStudent(){const name=document.getElementById('newName').value.trim();if(!name)return;socket.emit('lehrer:add_student',{name});document.getElementById('newName').value='';}
+const qrCache={};
+async function fetchQr(slug,url){if(qrCache[slug])return qrCache[slug];const d=await fetch(`/api/qr?url=${encodeURIComponent(url)}`).then(r=>r.json());if(d.qr)qrCache[slug]=d.qr;return d.qr||'';}
 const STATUS_LBL={bereit:'Bereit',laeuft:'Läuft…',ziel:'Ziel erreicht! ★',rand:'Rand erreicht',hindernis:'Hindernis!'};
-
 async function renderStudents(){
   const list=document.getElementById('student-list');
-  if(students.length===0){list.innerHTML='<div style="color:#475569;font-size:13px;padding:20px;">Noch keine Schüler angelegt.</div>';return;}
+  if(!students.length){list.innerHTML='<div style="color:#475569;font-size:13px;padding:20px;">Noch keine Schüler angelegt.</div>';return;}
   list.innerHTML='';
   for(const s of students){
     const url=`${location.origin}/schueler/${s.slug}`;
-    const card=document.createElement('div');
-    card.className='student-card'; card.dataset.slug=s.slug;
-    const initials=s.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    const statusClass='s-'+(s.status||'bereit');
-    const statusLabel=STATUS_LBL[s.status]||s.status||'Bereit';
-    const progText=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]||(p.cmd==='loop_count'?`↺${p.count}×`:'↺bis')).join(' → '):'Noch kein Programm';
-    card.innerHTML=`
-      <div class="sc-header">
-        <div class="sc-avatar">${initials}</div>
-        <div class="sc-name">${s.name}</div>
-        <span class="sc-del" data-slug="${s.slug}">×</span>
-      </div>
-      <div class="sc-status ${statusClass}"><div class="status-dot"></div><span class="sc-status-txt">${statusLabel}</span></div>
-      <div class="sc-qr"><img src="" width="160" height="160" style="border-radius:6px;" alt="QR"></div>
-      <div class="sc-link" onclick="navigator.clipboard.writeText('${url}');this.textContent='Kopiert!';setTimeout(()=>this.textContent='${url}',1500)">${url}</div>
-      <div class="sc-prog">${progText}</div>
-      <div class="sc-actions">
-        <button class="sc-btn" onclick="window.open('/schueler/${s.slug}','_blank')">&#128279; Öffnen</button>
-        <button class="sc-btn" data-reset="${s.slug}">&#8635; Reset</button>
-      </div>`;
+    const card=document.createElement('div');card.className='student-card';card.dataset.slug=s.slug;
+    const ini=s.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    card.innerHTML=`<div class="sc-header"><div class="sc-avatar">${ini}</div><div class="sc-name">${s.name}</div><span class="sc-del" data-slug="${s.slug}">×</span></div>
+<div class="sc-status s-${s.status||'bereit'}"><div class="status-dot"></div><span class="sc-status-txt">${STATUS_LBL[s.status]||'Bereit'}</span></div>
+<div class="sc-qr"><img src="" width="160" height="160" style="border-radius:6px;" alt="QR"></div>
+<div class="sc-link" onclick="navigator.clipboard.writeText('${url}');this.textContent='Kopiert!';setTimeout(()=>this.textContent='${url}',1500)">${url}</div>
+<div class="sc-actions"><button class="sc-btn" onclick="window.open('/schueler/${s.slug}','_blank')">🔗 Öffnen</button><button class="sc-btn" data-reset="${s.slug}">↺ Reset</button></div>`;
     list.appendChild(card);
-    // load QR from cache or fetch once
-    const img=card.querySelector('img');
-    fetchQr(s.slug,url).then(src=>{ if(src) img.src=src; });
+    fetchQr(s.slug,url).then(src=>{const img=card.querySelector('img');if(img&&src)img.src=src;});
   }
   list.querySelectorAll('.sc-del').forEach(b=>b.addEventListener('click',()=>socket.emit('lehrer:remove_student',{slug:b.dataset.slug})));
   list.querySelectorAll('[data-reset]').forEach(b=>b.addEventListener('click',()=>socket.emit('lehrer:reset_student',{slug:b.dataset.reset})));
 }
-
-// lightweight update: only touch status + prog text, leave QR/DOM intact
 function updateStudentCards(){
   students.forEach(s=>{
-    const card=document.getElementById('student-list').querySelector(`.student-card[data-slug="${s.slug}"]`);
-    if(!card) return;
-    const statusLabel=STATUS_LBL[s.status]||s.status||'Bereit';
-    const statusEl=card.querySelector('.sc-status');
-    if(statusEl){
-      statusEl.className='sc-status s-'+(s.status||'bereit');
-      const txt=statusEl.querySelector('.sc-status-txt'); if(txt) txt.textContent=statusLabel;
-    }
-    const progEl=card.querySelector('.sc-prog');
-    if(progEl){
-      progEl.textContent=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]||(p.cmd==='loop_count'?`↺${p.count}×`:'↺bis')).join(' → '):'Noch kein Programm';
-    }
+    const card=document.getElementById('student-list').querySelector(`.student-card[data-slug="${s.slug}"]`);if(!card)return;
+    const se=card.querySelector('.sc-status');if(se){se.className='sc-status s-'+(s.status||'bereit');const t=se.querySelector('.sc-status-txt');if(t)t.textContent=STATUS_LBL[s.status]||'Bereit';}
   });
 }
+
 // ── MONITOR ──
 function renderMonitor(){
   const grid=document.getElementById('monitor-grid');
-  if(students.length===0){grid.innerHTML='<div style="color:#475569;font-size:13px;padding:20px;">Keine Schüler angelegt.</div>';return;}
+  if(!students.length){grid.innerHTML='<div style="color:#475569;font-size:13px;padding:20px;">Keine Schüler angelegt.</div>';return;}
   grid.innerHTML='';
+  const isPaint=boardMode==='paint';
   students.forEach(s=>{
-    const card=document.createElement('div');
-    card.className='monitor-card'+(s.goalReached?' goal':'');
-    card.dataset.slug=s.slug;
-    const statusLabel={bereit:'⬜ Bereit',laeuft:'🔵 Läuft…',ziel:'⭐ Ziel!',rand:'🔴 Rand',hindernis:'🔴 Hindernis'}[s.status]||s.status;
-    const progText=s.prog&&s.prog.length?s.prog.map(p=>LBL[p.cmd]+(p.steps>1?' ×'+p.steps:'')).join(' → '):'–';
-    card.innerHTML=`
-      <div class="mc-header">
-        <div class="mc-name">${s.name}</div>
-        <div class="mc-status">${statusLabel}</div>
-      </div>
-      <div class="mc-field"><canvas class="mcv" id="mcv-${s.slug}"></canvas></div>
-      <div class="mc-prog">${progText}</div>`;
+    const card=document.createElement('div');card.className='monitor-card';card.dataset.slug=s.slug;
+    const stl={bereit:'⬜ Bereit',laeuft:'🔵 Läuft…',ziel:'⭐ Ziel!',rand:'🔴 Rand',hindernis:'🔴 Hindernis'};
+    card.innerHTML=`<div class="mc-header"><div class="mc-name">${s.name}</div><div class="mc-status">${stl[s.status]||s.status}</div></div>
+<div class="mc-canvases">
+  <div class="mc-cv-wrap"><canvas class="mcv" id="mcv-a-${s.slug}"></canvas>${isPaint?'<div class="mc-field-lbl">Position</div>':''}</div>
+  ${isPaint?`<div class="mc-cv-wrap"><canvas class="mcv" id="mcv-b-${s.slug}"></canvas><div class="mc-cv-lbl">Gemalt</div></div>`:''}
+</div>`;
     card.addEventListener('click',()=>openModal(s.slug));
     grid.appendChild(card);
-    // draw mini field
-    const mcv=document.getElementById('mcv-'+s.slug);
-    if(mcv){
-      const mctx=mcv.getContext('2d');
-      const S=Math.floor(196/board.gridN);
-      mcv.width=S*board.gridN; mcv.height=S*board.gridN;
-      mcv.style.width=mcv.width+'px'; mcv.style.height=mcv.height+'px';
-      drawField(mcv,mctx,board,{x:s.carX,y:s.carY,dir:s.carDir},S);
-    }
+    const S=Math.floor((isPaint?114:196)/board.gridN);
+    const ca=document.getElementById('mcv-a-'+s.slug);
+    if(ca){ca.width=S*board.gridN;ca.height=S*board.gridN;ca.style.width=ca.width+'px';ca.style.height=ca.height+'px';drawField(ca,ca.getContext('2d'),board,{x:s.carX,y:s.carY,dir:s.carDir},S);}
+    if(isPaint){const cb=document.getElementById('mcv-b-'+s.slug);if(cb){cb.width=S*board.gridN;cb.height=S*board.gridN;cb.style.width=cb.width+'px';cb.style.height=cb.height+'px';drawField(cb,cb.getContext('2d'),board,null,S,s.painted||[]);}}
   });
 }
 
 // ── MODAL ──
-function openModal(slug){
-  modalSlug=slug;
-  document.getElementById('modal').classList.add('open');
-  updateModal(slug);
-}
+function openModal(slug){modalSlug=slug;document.getElementById('modal').classList.add('open');updateModal(slug);}
 function updateModal(slug){
-  const s=students.find(x=>x.slug===slug); if(!s)return;
+  const s=students.find(x=>x.slug===slug);if(!s)return;
   document.getElementById('modal-name').textContent=s.name;
-  const statusLabel={bereit:'Bereit',laeuft:'Läuft…',ziel:'Ziel erreicht! ★',rand:'Rand',hindernis:'Hindernis'}[s.status]||s.status;
-  document.getElementById('modal-status-txt').textContent=statusLabel;
-  const mcv=document.getElementById('modal-cv');
-  const mctx=mcv.getContext('2d');
-  const S=Math.floor(440/board.gridN);
-  mcv.width=S*board.gridN; mcv.height=S*board.gridN; mcv.style.width='100%';
-  drawField(mcv,mctx,board,{x:s.carX,y:s.carY,dir:s.carDir},S);
-  const progHtml=s.prog&&s.prog.length?s.prog.map((p,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 4px 2px 0;padding:2px 7px;border-radius:5px;background:#0f172a;border:1px solid ${CLR[p.cmd]}33;color:${CLR[p.cmd]};font-size:11px;">${LBL[p.cmd]}${p.steps>1?' ×'+p.steps:''}</span>`).join(''):'<span style="color:#475569;">Noch kein Programm.</span>';
+  document.getElementById('modal-status-txt').textContent=STATUS_LBL[s.status]||s.status||'';
+  const S=Math.floor(220/board.gridN);
+  const mc=document.getElementById('modal-cv');mc.width=S*board.gridN;mc.height=S*board.gridN;mc.style.width='100%';drawField(mc,mc.getContext('2d'),board,{x:s.carX,y:s.carY,dir:s.carDir},S);
+  const hasPainted=boardMode==='paint'&&(s.painted||[]).length>0;
+  document.getElementById('modal-painted-wrap').style.display=hasPainted?'flex':'none';
+  if(hasPainted){const mp=document.getElementById('modal-painted-cv');mp.width=S*board.gridN;mp.height=S*board.gridN;mp.style.width='100%';drawField(mp,mp.getContext('2d'),board,null,S,s.painted||[]);}
+  const progHtml=s.prog&&s.prog.length
+    ?s.prog.map(p=>{const col=CLR[p.cmd]||PAINT_CLR[p.color]||'#475569';const lbl=LBL[p.cmd]||PAINT_LBL[p.color]||p.cmd;return`<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 3px;padding:2px 7px;border-radius:5px;background:#0f172a;border:1px solid ${col}44;color:${col};font-size:11px;">${lbl}${p.steps>1?' ×'+p.steps:''}</span>`;}).join('')
+    :'<span style="color:#475569;">Noch kein Programm.</span>';
   document.getElementById('modal-prog').innerHTML=progHtml;
 }
 document.getElementById('modal-close').addEventListener('click',()=>{document.getElementById('modal').classList.remove('open');modalSlug=null;});
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal')){document.getElementById('modal').classList.remove('open');modalSlug=null;}});
 
-window.addEventListener('resize',drawEditor);
+window.addEventListener('resize',()=>{drawEditor();if(document.getElementById('tab-muster').classList.contains('active'))drawMuster();});
 drawEditor();
 </script>
 </body>
