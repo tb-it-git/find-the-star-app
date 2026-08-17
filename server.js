@@ -7,7 +7,7 @@ const path    = require('path');
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server);
-const PORT   = process.env.PORT || 3000;
+const PORT   = process.env.PORT || 4000;
 
 // ── DEMO SPIELPLAN (6×6, einfacher Einstieg) ──
 let board = {
@@ -17,10 +17,9 @@ let board = {
   obstacles: [{x:3,y:1},{x:2,y:3}],
   colorCells: [],
   task: 'Fahre vom Start (►) zum Stern (★)!',
-  // Modus: 'drive' | 'paint'  – Lehrer schaltet um
   mode: 'drive',
-  // Vorlage für Malen-Modus (optional, kann leer bleiben)
-  pattern: []
+  pattern: [],
+  kidsMode: false
 };
 
 let students = {};

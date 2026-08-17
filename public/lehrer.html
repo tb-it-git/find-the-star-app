@@ -114,6 +114,10 @@ canvas.modal-cv{display:block;width:100%;border-radius:6px;}
     <button class="mtbtn active" id="btnModeDrive">🚗 Fahren</button>
     <button class="mtbtn" id="btnModePaint">🎨 Malen</button>
   </div>
+  <label style="display:flex;align-items:center;gap:6px;margin-left:12px;font-size:12px;color:#cbd5e1;cursor:pointer;">
+    <input type="checkbox" id="chkKids" style="width:16px;height:16px;cursor:pointer;">
+    <span>👶 Kids-Modus</span>
+  </label>
   <button class="hbtn success" id="btnPush" style="margin-left:8px;">✓ Freigeben</button>
 </header>
 
@@ -231,7 +235,7 @@ let students=[], activeTool='obstacle', startDir=0, activePc='red', modalSlug=nu
 let boardMode='drive';
 
 socket.emit('lehrer:join');
-socket.on('state:board',b=>{board=b;boardMode=b.mode||'drive';syncModeUI();drawEditor();drawMuster();});
+socket.on('state:board',b=>{board=b;boardMode=b.mode||'drive';document.getElementById('chkKids').checked=!!b.kidsMode;syncModeUI();drawEditor();drawMuster();});
 socket.on('state:students',s=>{
   const prev=students; students=s;
   const ps=prev.map(x=>x.slug).join(','), ns=s.map(x=>x.slug).join(',');
@@ -311,6 +315,7 @@ document.getElementById('taskInput').value=board.task;
 document.getElementById('btnPush').addEventListener('click',()=>{
   board.task=document.getElementById('taskInput').value||'Fahre zum Stern!';
   board.mode=boardMode;
+  board.kidsMode=document.getElementById('chkKids').checked;
   socket.emit('lehrer:update_board',board);
   const btn=document.getElementById('btnPush');btn.textContent='✓ Freigegeben!';setTimeout(()=>btn.textContent='✓ Freigeben',2000);
 });

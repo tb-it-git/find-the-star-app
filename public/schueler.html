@@ -110,6 +110,113 @@ canvas#patcv{position:absolute;border-radius:5px;pointer-events:none;opacity:0.4
 .xb{padding:6px 12px;border-radius:8px;border:1px solid #ddd;background:transparent;cursor:pointer;font-size:12px;color:#888;}
 .xb:hover{background:#f5f5f5;color:#333;}
 
+/* ═══════════════════════════════════════════ */
+/* KIDS-MODUS – große Piktogramm-Karten, kein Text-Fokus */
+/* ═══════════════════════════════════════════ */
+body.kids .bb{
+  flex-direction:column;
+  gap:4px;
+  padding:12px 6px;
+  min-height:80px;
+  font-size:11px;
+  border-width:2px;
+  border-radius:12px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+body.kids .bb .kicon{
+  font-size:36px;
+  line-height:1;
+  display:block;
+}
+body.kids .bb .dot{display:none;} /* hide the small colored dot */
+body.kids .bb .klabel{
+  font-size:10px;
+  color:#666;
+  font-weight:400;
+}
+body.kids #palette{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  padding:8px;
+}
+body.kids .pal-hint{display:none;}
+body.kids #plist{padding:6px;}
+body.kids .pb{
+  flex-direction:column;
+  gap:2px;
+  padding:10px 6px;
+  min-height:72px;
+  font-size:10px;
+  border-width:2px;
+  border-radius:10px;
+  align-items:center;
+  text-align:center;
+}
+body.kids .pb .kicon{font-size:32px;line-height:1;}
+body.kids .pb .klabel{display:none;} /* hide text in program list too */
+body.kids .pb .dot{display:none;}
+body.kids .pb .del{
+  position:absolute;top:2px;right:4px;
+  font-size:18px;color:#ef4444;background:#fff;border-radius:50%;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  border:1px solid #ef4444;
+}
+body.kids .pb{position:relative;}
+body.kids .drag-handle{display:none;}
+/* dot counter in kids mode – 1..5 dots instead of number */
+body.kids .ps{gap:6px;}
+body.kids .ps button{
+  width:32px;height:32px;border-radius:8px;font-size:18px;font-weight:700;
+  border-width:2px;
+}
+body.kids .ps span{
+  min-width:auto;
+  display:inline-flex;gap:3px;align-items:center;
+}
+body.kids .kdot{
+  width:8px;height:8px;border-radius:50%;background:#2563eb;
+  display:inline-block;
+}
+/* status banner as big emoji overlay */
+#kidsOverlay{
+  position:fixed;inset:0;
+  display:none;align-items:center;justify-content:center;
+  z-index:200;pointer-events:none;
+  background:rgba(0,0,0,0.35);
+  animation:fadeIn .2s ease-out;
+}
+#kidsOverlay.show{display:flex;}
+#kidsOverlay .icon{
+  font-size:180px;
+  animation:pop .4s cubic-bezier(.34,1.56,.64,1);
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+/* larger Run/Reset buttons in kids mode */
+body.kids .rb{
+  font-size:16px;padding:12px 24px;
+  min-height:48px;border-width:2px;
+  font-weight:700;
+}
+body.kids .xb{
+  font-size:14px;padding:10px 18px;
+  min-height:48px;
+}
+body.kids #smsg{display:none;} /* hide text status in kids mode */
+body.kids #statusbar{min-height:64px;}
+body.kids .ph{display:none;} /* no headings */
+body.kids .hide-kids{display:none !important;}
+body.kids #modeToggle{display:none;}
+body.kids #app{grid-template-columns:1fr 1fr 2fr;} /* wider field */
+/* speed control in kids mode: turtle → rabbit icons */
+body.kids .tempo-label{display:none;}
+body.kids #spv{display:none;}
+body.kids .tempo-icons{display:flex;gap:4px;align-items:center;font-size:20px;}
+
 @media(prefers-color-scheme:dark){
   body{background:#111;color:#f0f0f0;}
   #col-palette,#col-prog,.ph{background:#1e1e1e;border-color:#2e2e2e;}
@@ -170,26 +277,26 @@ canvas#patcv{position:absolute;border-radius:5px;pointer-events:none;opacity:0.4
     <div class="pal-hint">↓ Klicken zum Hinzufügen</div>
     <div id="palette">
       <!-- Drive blocks -->
-      <div class="bb drive-bb" data-cmd="fwd" ><span class="dot" style="background:#378ADD"></span>Vorwärts</div>
-      <div class="bb drive-bb" data-cmd="bwd" ><span class="dot" style="background:#D85A30"></span>Rückwärts</div>
-      <div class="bb drive-bb" data-cmd="left"><span class="dot" style="background:#1D9E75"></span>Links drehen</div>
-      <div class="bb drive-bb" data-cmd="rght"><span class="dot" style="background:#BA7517"></span>Rechts drehen</div>
-      <div class="bb drive-bb" data-cmd="stp" ><span class="dot" style="background:#E24B4A"></span>Stopp</div>
-      <div class="bb drive-bb" data-cmd="wait"><span class="dot" style="background:#888780"></span>Warten</div>
-      <div class="bb drive-bb" data-cmd="sensor"     style="border-color:#a855f7;color:#6b21a8;"><span class="dot" style="background:#a855f7"></span>Wenn Farbe…</div>
-      <div class="bb drive-bb" data-cmd="loop_count" style="border-color:#f59e0b;color:#92400e;"><span class="dot" style="background:#f59e0b"></span>Wiederhole X mal</div>
-      <div class="bb drive-bb" data-cmd="loop_until" style="border-color:#0d9488;color:#0f766e;"><span class="dot" style="background:#0d9488"></span>Mache … bis …</div>
+      <div class="bb drive-bb" data-cmd="fwd" ><span class="dot" style="background:#378ADD"></span><span class="kicon">⬆️</span><span class="klabel">Vorwärts</span></div>
+      <div class="bb drive-bb" data-cmd="bwd" ><span class="dot" style="background:#D85A30"></span><span class="kicon">⬇️</span><span class="klabel">Rückwärts</span></div>
+      <div class="bb drive-bb" data-cmd="left"><span class="dot" style="background:#1D9E75"></span><span class="kicon">↪️</span><span class="klabel">Links drehen</span></div>
+      <div class="bb drive-bb" data-cmd="rght"><span class="dot" style="background:#BA7517"></span><span class="kicon">↩️</span><span class="klabel">Rechts drehen</span></div>
+      <div class="bb drive-bb" data-cmd="stp" ><span class="dot" style="background:#E24B4A"></span><span class="kicon">🛑</span><span class="klabel">Stopp</span></div>
+      <div class="bb drive-bb" data-cmd="wait"><span class="dot" style="background:#888780"></span><span class="kicon">⏸️</span><span class="klabel">Warten</span></div>
+      <div class="bb drive-bb hide-kids" data-cmd="sensor"     style="border-color:#a855f7;color:#6b21a8;"><span class="dot" style="background:#a855f7"></span><span class="klabel">Wenn Farbe…</span></div>
+      <div class="bb drive-bb hide-kids" data-cmd="loop_count" style="border-color:#f59e0b;color:#92400e;"><span class="dot" style="background:#f59e0b"></span><span class="klabel">Wiederhole X mal</span></div>
+      <div class="bb drive-bb hide-kids" data-cmd="loop_until" style="border-color:#0d9488;color:#0f766e;"><span class="dot" style="background:#0d9488"></span><span class="klabel">Mache … bis …</span></div>
       <!-- Paint blocks (hidden until paint mode) -->
-      <div class="bb paint-bb" data-cmd="fwd" ><span class="dot" style="background:#378ADD"></span>Vorwärts</div>
-      <div class="bb paint-bb" data-cmd="bwd" ><span class="dot" style="background:#D85A30"></span>Rückwärts</div>
-      <div class="bb paint-bb" data-cmd="left"><span class="dot" style="background:#1D9E75"></span>Links drehen</div>
-      <div class="bb paint-bb" data-cmd="rght"><span class="dot" style="background:#BA7517"></span>Rechts drehen</div>
-      <div class="bb paint-bb" data-cmd="stp" ><span class="dot" style="background:#E24B4A"></span>Stopp</div>
-      <div class="bb paint-bb" data-cmd="loop_count" style="border-color:#f59e0b;color:#92400e;"><span class="dot" style="background:#f59e0b"></span>Wiederhole X mal</div>
-      <div class="bb paint-bb" data-cmd="paint" data-color="red"   style="border-color:#ef4444;color:#991b1b;"><span class="dot" style="background:#ef4444"></span>Male Rot</div>
-      <div class="bb paint-bb" data-cmd="paint" data-color="blue"  style="border-color:#3b82f6;color:#1e3a8a;"><span class="dot" style="background:#3b82f6"></span>Male Blau</div>
-      <div class="bb paint-bb" data-cmd="paint" data-color="green" style="border-color:#22c55e;color:#14532d;"><span class="dot" style="background:#22c55e"></span>Male Grün</div>
-      <div class="bb paint-bb" data-cmd="paint" data-color="yellow"style="border-color:#ca8a04;color:#713f12;"><span class="dot" style="background:#ca8a04"></span>Male Gelb</div>
+      <div class="bb paint-bb" data-cmd="fwd" ><span class="dot" style="background:#378ADD"></span><span class="kicon">⬆️</span><span class="klabel">Vorwärts</span></div>
+      <div class="bb paint-bb" data-cmd="bwd" ><span class="dot" style="background:#D85A30"></span><span class="kicon">⬇️</span><span class="klabel">Rückwärts</span></div>
+      <div class="bb paint-bb" data-cmd="left"><span class="dot" style="background:#1D9E75"></span><span class="kicon">↪️</span><span class="klabel">Links drehen</span></div>
+      <div class="bb paint-bb" data-cmd="rght"><span class="dot" style="background:#BA7517"></span><span class="kicon">↩️</span><span class="klabel">Rechts drehen</span></div>
+      <div class="bb paint-bb" data-cmd="stp" ><span class="dot" style="background:#E24B4A"></span><span class="kicon">🛑</span><span class="klabel">Stopp</span></div>
+      <div class="bb paint-bb hide-kids" data-cmd="loop_count" style="border-color:#f59e0b;color:#92400e;"><span class="dot" style="background:#f59e0b"></span><span class="klabel">Wiederhole X mal</span></div>
+      <div class="bb paint-bb" data-cmd="paint" data-color="red"   style="border-color:#ef4444;color:#991b1b;"><span class="dot" style="background:#ef4444"></span><span class="kicon" style="color:#ef4444;">🎨</span><span class="klabel">Male Rot</span></div>
+      <div class="bb paint-bb" data-cmd="paint" data-color="blue"  style="border-color:#3b82f6;color:#1e3a8a;"><span class="dot" style="background:#3b82f6"></span><span class="kicon" style="color:#3b82f6;">🎨</span><span class="klabel">Male Blau</span></div>
+      <div class="bb paint-bb" data-cmd="paint" data-color="green" style="border-color:#22c55e;color:#14532d;"><span class="dot" style="background:#22c55e"></span><span class="kicon" style="color:#22c55e;">🎨</span><span class="klabel">Male Grün</span></div>
+      <div class="bb paint-bb" data-cmd="paint" data-color="yellow"style="border-color:#ca8a04;color:#713f12;"><span class="dot" style="background:#ca8a04"></span><span class="kicon" style="color:#ca8a04;">🎨</span><span class="klabel">Male Gelb</span></div>
     </div>
   </div>
 
@@ -203,10 +310,12 @@ canvas#patcv{position:absolute;border-radius:5px;pointer-events:none;opacity:0.4
   <div id="right">
     <div id="statusbar">
       <button class="rb" id="btnRun" disabled>▶ Starten</button>
-      <button class="xb" id="btnReset">Zurücksetzen</button>
+      <button class="xb" id="btnReset">↺ Reset</button>
       <span id="smsg">Warte auf Spielfeld…</span>
-      <span style="font-size:12px;color:#666;">Tempo</span>
+      <span class="tempo-label" style="font-size:12px;color:#666;">Tempo</span>
+      <span class="tempo-icons">🐢</span>
       <input type="range" id="spd" min="1" max="5" value="3" step="1" style="width:80px;">
+      <span class="tempo-icons">🐇</span>
       <span id="spv" style="font-size:12px;color:#444;min-width:14px;">3</span>
     </div>
     <div id="fa">
@@ -216,6 +325,8 @@ canvas#patcv{position:absolute;border-radius:5px;pointer-events:none;opacity:0.4
     </div>
   </div>
 </div>
+<!-- Kids-Modus Overlay für großes Feedback -->
+<div id="kidsOverlay"><div class="icon" id="kidsOverlayIcon">⭐</div></div>
 
 <script>
 // ── CONSTANTS ──
@@ -241,6 +352,40 @@ let board    = null, prog = [], running = false;
 let car      = {x:0,y:0,dir:0};
 let painted  = []; // {x,y,color}[]
 let appMode  = 'drive'; // 'drive'|'paint'
+let kidsMode = false;
+
+const KICON = {fwd:'⬆️',bwd:'⬇️',left:'↪️',rght:'↩️',stp:'🛑',wait:'⏸️',paint:'🎨'};
+
+// ── AUDIO SYSTEM ──
+let audioCtx=null;
+function ensureAudio(){if(audioCtx)return audioCtx;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}return audioCtx;}
+function playTone(f,d=0.15,t='sine',v=0.15){const c=ensureAudio();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}
+function soundClick(){playTone(660,0.08,'triangle',0.10);}
+function soundStep() {playTone(440,0.06,'square',0.06);}
+function soundTurn() {playTone(550,0.10,'triangle',0.08);}
+function soundPaint(){playTone(880,0.12,'sine',0.10);}
+function soundGoal() {const c=ensureAudio();if(!c)return;[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.18,'sine',0.15),i*120));}
+function soundCrash(){playTone(150,0.35,'sawtooth',0.15);}
+function soundStop() {playTone(220,0.20,'square',0.12);}
+function soundReset(){playTone(330,0.10,'triangle',0.08);}
+
+// ── KIDS OVERLAY ──
+let overlayTimer=null;
+function showOverlay(icon,ms=900){
+  if(!kidsMode)return;
+  const el=document.getElementById('kidsOverlay');
+  document.getElementById('kidsOverlayIcon').textContent=icon;
+  el.classList.add('show');
+  clearTimeout(overlayTimer);
+  overlayTimer=setTimeout(()=>el.classList.remove('show'),ms);
+}
+
+// ── APPLY KIDS MODE ──
+function applyKidsMode(on){
+  kidsMode=on;
+  document.body.classList.toggle('kids',on);
+  renderProg(); // re-render with new visuals
+}
 
 const cv     = document.getElementById('cv');
 const ctx    = cv.getContext('2d');
@@ -263,9 +408,9 @@ socket.on('state:board', b => {
   document.getElementById('btnRun').disabled=false;
   setSt('Bereit!');
   if(b.task){document.getElementById('taskText').textContent=b.task;document.getElementById('task-banner').classList.remove('hidden');}
-  // apply mode from board
   const serverMode=b.mode||'drive';
   setMode(serverMode);
+  applyKidsMode(!!b.kidsMode);
   draw(); drawPattern();
 });
 socket.on('student:reset',()=>{
@@ -353,7 +498,8 @@ function renderPbBlock(item,path){
     if(topLevel){el.draggable=true;el.dataset.dragIdx=path[0];}
     const col=PAINT_CLR[item.color]||'#888';
     el.innerHTML=`${handle}<span class="dot" style="background:${col};flex-shrink:0;"></span>
-<span style="flex:1;">${PAINT_LBL[item.color]||'Male'}</span>
+<span class="kicon" style="color:${col};">🎨</span>
+<span class="klabel" style="flex:1;">${PAINT_LBL[item.color]||'Male'}</span>
 <span class="del" data-path='${ps}'>×</span>`;
   } else if(item.cmd==='sensor'){
     el.className='pb pb-sensor';
@@ -370,9 +516,15 @@ function renderPbBlock(item,path){
     el.className='pb';
     if(topLevel){el.draggable=true;el.dataset.dragIdx=path[0];}
     const hs=item.cmd!=='stp'&&item.cmd!=='wait';
+    const steps=item.steps||1;
+    // in kids mode, show dots instead of number; cap at 5
+    const stepsDisplay = kidsMode
+      ? Array.from({length:Math.min(steps,5)}, ()=>'<span class="kdot"></span>').join('') + (steps>5?'+':'')
+      : String(steps);
     el.innerHTML=`${handle}<span class="dot" style="background:${CLR[item.cmd]||'#888'};flex-shrink:0;"></span>
-<span style="flex:1;">${LBL[item.cmd]||item.cmd}</span>
-${hs?`<div class="ps"><button class="step-btn" data-path='${ps}' data-d="-1">−</button><span>${item.steps||1}</span><button class="step-btn" data-path='${ps}' data-d="1">+</button></div>`:''}
+<span class="kicon">${KICON[item.cmd]||'⬜'}</span>
+<span class="klabel" style="flex:1;">${LBL[item.cmd]||item.cmd}</span>
+${hs?`<div class="ps"><button class="step-btn" data-path='${ps}' data-d="-1">−</button><span>${stepsDisplay}</span><button class="step-btn" data-path='${ps}' data-d="1">+</button></div>`:''}
 <span class="del" data-path='${ps}'>×</span>`;
   }
   return el;
@@ -453,6 +605,7 @@ function renderProg(){
 // ── PALETTE CLICK ──
 document.getElementById('palette').addEventListener('click',e=>{
   const b=e.target.closest('.bb');if(!b||running)return;
+  soundClick();
   const cmd=b.dataset.cmd;
   if(cmd==='sensor')     prog.push(newSensor());
   else if(cmd==='loop_count') prog.push(newLoopCount());
@@ -595,41 +748,42 @@ async function execSimple(item,path){
       setSt(`Male ${item.color}!`);
       draw();
     }
+    soundPaint();
     syncPainted();
     await sleep(D);
     return 'ok';
   }
-  if(cmd==='stp'){setSt('Stopp!');syncCar('stp');await sleep(D*1.5);return 'stop';}
+  if(cmd==='stp'){setSt('Stopp!');soundStop();showOverlay('🛑',700);syncCar('stp');await sleep(D*1.5);return 'stop';}
   if(cmd==='wait'){setSt('Warte …');for(let s=0;s<(item.steps||1);s++)await sleep(D);return 'ok';}
   if(cmd==='sensor'){
     const on=board.colorCells.find(c=>c.x===car.x&&c.y===car.y&&c.color===item.color);
     const act=on?item.action:(item.elseAction||'stp');
     setSt('Sensor: '+SENSOR_COLOR_LBL[item.color]+' '+(on?'erkannt':'nicht da')+' → '+SENSOR_ACTION_LBL[act]);
-    if(act==='left'||act==='rght'){car.dir=(car.dir+(act==='left'?3:1))%4;draw();syncCar('laeuft');}
-    else if(act==='stp'){syncCar('stp');draw();await sleep(D);return 'stop';}
+    if(act==='left'||act==='rght'){car.dir=(car.dir+(act==='left'?3:1))%4;draw();soundTurn();syncCar('laeuft');}
+    else if(act==='stp'){syncCar('stp');soundStop();draw();await sleep(D);return 'stop';}
     else if(act==='fwd'||act==='bwd'){
       const[ddx,ddy]=DELTA[car.dir];const dx=act==='bwd'?-ddx:ddx,dy=act==='bwd'?-ddy:ddy;
       const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
-      if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand!');syncCar('rand');draw();return 'crash';}
-      if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');syncCar('hindernis');draw();return 'crash';}
-      car.x=nx;car.y=ny;draw();
-      if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel! ★');syncCar('ziel');return 'goal';}
+      if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand!');soundCrash();showOverlay('💥',900);syncCar('rand');draw();return 'crash';}
+      if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');soundCrash();showOverlay('💥',900);syncCar('hindernis');draw();return 'crash';}
+      car.x=nx;car.y=ny;draw();soundStep();
+      if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel! ★');soundGoal();showOverlay('⭐',1500);syncCar('ziel');return 'goal';}
       syncCar('laeuft');
     }
     await sleep(D);return 'ok';
   }
-  if(cmd==='left'||cmd==='rght'){for(let s=0;s<(item.steps||1);s++){car.dir=(car.dir+(cmd==='left'?3:1))%4;draw();syncCar('laeuft');await sleep(D);}return 'ok';}
+  if(cmd==='left'||cmd==='rght'){for(let s=0;s<(item.steps||1);s++){car.dir=(car.dir+(cmd==='left'?3:1))%4;draw();soundTurn();syncCar('laeuft');await sleep(D);}return 'ok';}
   // fwd/bwd
   for(let s=0;s<(item.steps||1);s++){
     const[ddx,ddy]=DELTA[car.dir];
     const dx=cmd==='bwd'?-ddx:ddx,dy=cmd==='bwd'?-ddy:ddy;
     const nx=car.x+dx,ny=car.y+dy,N=board.gridN;
-    if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand – Stopp!');syncCar('rand');draw();return 'crash';}
-    if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');syncCar('hindernis');draw();return 'crash';}
+    if(nx<0||ny<0||nx>=N||ny>=N){setSt('Rand – Stopp!');soundCrash();showOverlay('💥',900);syncCar('rand');draw();return 'crash';}
+    if(board.obstacles.some(o=>o.x===nx&&o.y===ny)){setSt('Hindernis!');soundCrash();showOverlay('💥',900);syncCar('hindernis');draw();return 'crash';}
     car.x=nx;car.y=ny;
     const cc=board.colorCells.find(c=>c.x===car.x&&c.y===car.y);if(cc)setSt('Farbfeld: '+cc.color.toUpperCase());
-    draw();
-    if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel erreicht! ★');syncCar('ziel');return 'goal';}
+    draw();soundStep();
+    if(car.x===board.goalX&&car.y===board.goalY){setSt('Ziel erreicht! ★');soundGoal();showOverlay('⭐',1500);syncCar('ziel');return 'goal';}
     syncCar('laeuft');
     await sleep(D);
   }
@@ -683,7 +837,7 @@ document.getElementById('btnReset').addEventListener('click',()=>{
   if(!board||running)return;
   car={x:board.startX,y:board.startY,dir:board.startDir};
   if(appMode==='paint'){painted=[];syncPainted();}
-  hlClear();setSt('Zurückgesetzt.');draw();syncCar('bereit');
+  hlClear();setSt('Zurückgesetzt.');draw();soundReset();syncCar('bereit');
 });
 document.getElementById('spd').addEventListener('input',function(){document.getElementById('spv').textContent=this.value;});
 window.addEventListener('resize',()=>{draw();drawPattern();});

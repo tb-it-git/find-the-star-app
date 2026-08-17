@@ -7,7 +7,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 # Eigene IP ermitteln
 IP=$(ip route get 1 2>/dev/null | awk '{print $7; exit}' || hostname -I | awk '{print $1}')
-PORT=${PORT:-3000}
+PORT=${PORT:-4000}
 
 echo ""
 echo "👩‍🏫  Lehrer-URL:   http://${IP}:${PORT}/lehrer"
